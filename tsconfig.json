@@ -10,7 +10,6 @@
     "out": "./dist/program.js"
   },
   "exclude": [
-    "node_modules",
-    "public"
+    "node_modules"
   ]
 }

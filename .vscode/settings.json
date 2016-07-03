@@ -1,4 +1,3 @@
-// Place your settings in this file to overwrite default and user settings.
 {
   "files.trimTrailingWhitespace": true,
   "editor.tabSize": 2,
@@ -6,12 +5,11 @@
     "**/.git": true,
     "**/.DS_Store": true,
     "node_modules": true,
-    "public": true,
-    "typings": true
+    "dist": true
   },
   "search.exclude": {
     "**/node_modules": true,
-    "reports": true
+    "dist": true
   },
   "tslint.enable": true
 }
