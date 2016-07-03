@@ -3,6 +3,7 @@ namespace Fireworks {
 
   export class Particle {
 
+    positions: IPoint[]
     position: IPoint
     velocity: IPoint
     resistance: number
@@ -11,7 +12,8 @@ namespace Fireworks {
     shrink: number
     size: number
     alpha: number
-    color: number
+    hue: number
+    brightness: number
 
     constructor (position: IPoint) {
 
@@ -25,54 +27,45 @@ namespace Fireworks {
           y: 0
       }
 
-      this.shrink = .75
+      this.shrink = 0.75
       this.size = 2
       this.resistance = 1
       this.gravity = 0
       this.alpha = 1
       this.fade = 0
-      this.color = 0
+      this.hue = random(0, 360)
+      this.brightness = random(50, 60)
+
+      this.positions = []
+      let positionCount = 3
+      while (positionCount--) {
+        this.positions.push(position)
+      }
     }
 
-    update () {
-      this.velocity.x = this.velocity.x * this.resistance
-      this.velocity.y = (this.velocity.y * this.resistance) + this.gravity
+    update (index: number) {
+      this.positions.pop()
+      this.positions.unshift({x: this.position.x, y: this.position.y})
+      this.velocity.x *= this.resistance
+      this.velocity.y *= this.resistance
+      this.velocity.y += this.gravity
       this.position.x += this.velocity.x
       this.position.y += this.velocity.y
       this.size *= this.shrink
       this.alpha -= this.fade
+      if (!this.exists()) {
+        particles.splice(index, 1)
+      }
     }
 
     render () {
-      if (!this.exists()) {
-        return
-      }
-      ctx.save()
-      ctx.globalCompositeOperation = 'lighter'
-      ctx.fillStyle = this.gradient
+      const lastPosition = this.positions[this.positions.length - 1]
       ctx.beginPath()
-      this.arc()
-      ctx.closePath()
-      ctx.fill()
-      ctx.restore()
-    }
-
-    arc () {
-      const x = this.position.x
-      const y = this.position.y
-      const radius = this.size
-      ctx.arc(x, y, radius, 0, TAU, true)
-    }
-
-    get gradient (): CanvasGradient {
-      const x = this.position.x
-      const y = this.position.y
-      const radius = this.size / 2
-      const gradient = ctx.createRadialGradient(x, y, 0.1, x, y, radius)
-      gradient.addColorStop(0.1, `rgba(255, 255, 255, ${this.alpha})`)
-      gradient.addColorStop(0.8, `hsla(${this.color}, 100%, 50%, ${this.alpha})`)
-      gradient.addColorStop(1, `hsla(${this.color}, 100%, 50%, 0.1)`)
-      return gradient
+      ctx.moveTo(lastPosition.x, lastPosition.y)
+      ctx.lineTo(this.position.x, this.position.y)
+      ctx.lineWidth = this.size
+      ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`
+      ctx.stroke()
     }
 
     exists () {
@@ -80,11 +73,11 @@ namespace Fireworks {
         return false
       }
 
-      if (this.position.x > viewPortWidth || this.position.x < 0) {
+      if (this.position.x > cw || this.position.x < 0) {
         return false
       }
 
-      if (this.position.y > viewPortHeight || this.position.y < 0) {
+      if (this.position.y > ch || this.position.y < 0) {
         return false
       }
 
