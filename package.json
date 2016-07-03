@@ -4,7 +4,8 @@
   "description": "fireworks example",
   "main": "index.js",
   "scripts": {
-    "compile": "rimraf dist && tsc"
+    "compile": "rimraf dist && tsc",
+    "lint": "tslint ts/**/*.ts"
   },
   "author": {
     "name": "Tyler Waters",
@@ -14,5 +15,8 @@
   "dependencies": {
     "rimraf": "^2.5.2",
     "typescript": "^1.8.10"
+  },
+  "devDependencies": {
+    "tslint": "^3.13.0"
   }
 }

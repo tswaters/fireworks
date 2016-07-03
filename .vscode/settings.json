@@ -12,5 +12,6 @@
   "search.exclude": {
     "**/node_modules": true,
     "reports": true
-  }
+  },
+  "tslint.exclude": "true"
 }

@@ -43,12 +43,12 @@ namespace Fireworks {
       ctx.globalCompositeOperation = 'destination-out'
       ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
       ctx.fillRect(0, 0, cw, ch)
-      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalCompositeOperation = 'lighter'
 
       let x: number = null
 
       x = rockets.length
-      while ( x-- ) {
+      while (x--) {
         rockets[x].render()
         rockets[x].update(x)
       }
