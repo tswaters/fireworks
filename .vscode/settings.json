@@ -13,5 +13,5 @@
     "**/node_modules": true,
     "reports": true
   },
-  "tslint.exclude": "true"
+  "tslint.enable": true
 }
