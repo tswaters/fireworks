@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "removeComments": true,
+    "sourceMap": false,
+    "target": "es6",
+    "declaration": false,
+    "noImplicitUseStrict": false,
+    "noEmitOnError": true,
+    "noImplicitAny": true,
+    "out": "./dist/program.js"
+  },
+  "exclude": [
+    "node_modules",
+    "public"
+  ]
+}

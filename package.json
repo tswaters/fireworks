@@ -1,0 +1,18 @@
+{
+  "name": "fireworks",
+  "version": "1.0.0",
+  "description": "fireworks example",
+  "main": "index.js",
+  "scripts": {
+    "compile": "rimraf dist && tsc"
+  },
+  "author": {
+    "name": "Tyler Waters",
+    "email": "tyler.waters@gmail.com"
+  },
+  "license": "WTFPL",
+  "dependencies": {
+    "rimraf": "^2.5.2",
+    "typescript": "^1.8.10"
+  }
+}
