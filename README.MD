@@ -1,4 +1,4 @@
-# Fireworks sample
+# Fireworks Canvas Example
 
 ```sh
 npm install
@@ -8,3 +8,4 @@ npm run-script compile
 # see: https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/6664966/
 ```
 
+[Take a look at the live example!](https://tswaters.github.io/fireworks/)
