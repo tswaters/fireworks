@@ -10,7 +10,7 @@
     "build": "npm run clean && npm run compile && npm run minify",
     "lint": "tslint ts/**/*.ts",
     "publish:patch": "node scripts/publish.js patch",
-    "publish:minor": "scripts/publish.js minor",
+    "publish:minor": "node scripts/publish.js minor",
     "publish:major": "node scripts/publish.js major"
   },
   "author": {

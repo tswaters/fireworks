@@ -19,7 +19,10 @@ try {
 
   exec('git pull origin master')
 
-  semverBumper(process.argv.slice(2)[0])
+  const retCode = semverBumper(process.argv.slice(2)[0])
+  if (retCode !== 0) {
+    throw new Error('Problem updating version')
+  }
 
   const packageJson = require('../package')
 
