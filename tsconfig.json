@@ -7,7 +7,7 @@
     "noImplicitUseStrict": false,
     "noEmitOnError": true,
     "noImplicitAny": true,
-    "out": "./dist/program.js"
+    "out": "./dist/fireworks.js"
   },
   "exclude": [
     "node_modules"

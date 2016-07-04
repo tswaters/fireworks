@@ -1,22 +1,30 @@
 {
-  "name": "fireworks",
+  "name": "fireworks-canvas",
   "version": "1.0.0",
   "description": "fireworks example",
-  "main": "index.js",
+  "main": "./dist/fireworks.js",
   "scripts": {
-    "compile": "rimraf dist && tsc",
+    "clean": "rimraf dist",
+    "minify": "uglifyjs ./dist/fireworks.js -o ./dist/fireworks.min.js",
+    "compile": "tsc",
+    "build": "npm run clean && npm run compile && npm run minify",
     "lint": "tslint ts/**/*.ts"
   },
   "author": {
     "name": "Tyler Waters",
     "email": "tyler.waters@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tswaters/fireworks.git"
+  },
   "license": "WTFPL",
   "dependencies": {
-    "rimraf": "^2.5.2",
-    "typescript": "^1.8.10"
   },
   "devDependencies": {
-    "tslint": "^3.13.0"
+    "rimraf": "^2.5.2",
+    "tslint": "^3.13.0",
+    "typescript": "^1.8.10",
+    "uglify-js": "github:mishoo/UglifyJS2#harmony"
   }
 }

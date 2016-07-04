@@ -1,0 +1,28 @@
+{
+  "name": "fireworks-canvas",
+  "description": "fireworks with canvas",
+  "main": "./dist/fireworks.js",
+  "authors": [
+    "Tyler Waters <tyler.waters@gmail.com>"
+  ],
+  "license": "WTFPL",
+  "homepage": "https://tswaters.github.io/fireworks/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tswaters/fireworks.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "npm-debug.log",
+    "index.html",
+    "package.json",
+    "README.MD",
+    "tsconfig.json",
+    "tslint.json",
+    "ts",
+    "test",
+    "tests"
+  ]
+}

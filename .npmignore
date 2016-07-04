@@ -1,0 +1,8 @@
+.vscode
+node_modules
+npm-debug.log
+index.html
+ts
+tsconfig.json
+tslint.json
+bower.json
