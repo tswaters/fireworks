@@ -1,6 +1,6 @@
 {
   "name": "fireworks-canvas",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "fireworks example",
   "main": "./dist/fireworks.js",
   "scripts": {
