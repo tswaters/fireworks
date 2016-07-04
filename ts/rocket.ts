@@ -16,7 +16,7 @@ namespace Fireworks {
     update (index: number) {
       super.update(index)
 
-      if (this.position.y <= ch / 2 && random(0, 100) <= 80) {
+      if (this.position.y <= ch * (1 - explosionHeight) && random(0, 1) <= explosionChance) {
         this.explode()
         rockets.splice(index, 1)
       }
@@ -24,7 +24,7 @@ namespace Fireworks {
     }
 
     explode () {
-      const count = random(0, 10) + 100
+      const count = random(0, 10) + numParticles
 
       for (let i = 0; i < count; i += 1) {
 

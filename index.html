@@ -3,7 +3,7 @@
 <head>
   <title>Fireworks</title>
   <meta charset="utf-8">
-  <script src="./dist/program.js"></script>
+  <script src="./dist/fireworks.js"></script>
   <style>
     body {
       background-color: black;
@@ -19,7 +19,15 @@
 <body>
   <div id="container"></div>
   <script>
-    new Fireworks.Fireworks(document.getElementById('container'))
+const container = document.getElementById('container')
+const options = {
+  maxRockets: 3,            // max # of rockets to spawn
+  rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
+  numParticles: 150,        // number of particles to spawn when rocket explodes (+0-10)
+  explosionHeight: 0.2,     // minimum percentage of height of container at which rockets explode
+  explosionChance: 0.08     // chance in each tick the rocket will explode
+}
+const fireworks = new Fireworks.start(container, options)
   </script>
 </body>
 </html>

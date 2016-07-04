@@ -3,6 +3,7 @@
     "removeComments": true,
     "sourceMap": false,
     "target": "es6",
+    "newLine": "LF",
     "declaration": false,
     "noImplicitUseStrict": false,
     "noEmitOnError": true,

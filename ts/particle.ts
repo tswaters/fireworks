@@ -3,9 +3,9 @@ namespace Fireworks {
 
   export class Particle {
 
-    positions: IPoint[]
-    position: IPoint
-    velocity: IPoint
+    positions: Point[]
+    position: Point
+    velocity: Point
     resistance: number
     gravity: number
     fade: number
@@ -15,7 +15,7 @@ namespace Fireworks {
     hue: number
     brightness: number
 
-    constructor (position: IPoint) {
+    constructor (position: Point) {
 
       this.position = {
           x: position ? position.x : 0,

@@ -9,6 +9,20 @@ bower install --save fireworks-canvas
 npm install --save fireworks-canvas
 ```
 
+## usage
+
+```js
+const container = document.getElementById('container')
+const options = {
+  maxRockets: 3,            // max # of rockets to spawn
+  rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
+  numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
+  explosionHeight: 0.2,     // minimum percentage of height of container at which rockets explode
+  explosionChance: 0.08     // chance in each tick the rocket will explode
+}
+const fireworks = new Fireworks.start(container, options)
+```
+
 ## support
 
 - doesn't work within a node context

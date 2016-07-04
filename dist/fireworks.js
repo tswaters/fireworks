@@ -1,47 +1,54 @@
 var Fireworks;
-(function (Fireworks_1) {
-    Fireworks_1.TAU = Math.PI * 2;
-    const MAX_ROCKETS = 5;
+(function (Fireworks) {
+    Fireworks.TAU = Math.PI * 2;
     function random(min, max) {
         return Math.random() * (max - min) + min;
     }
-    Fireworks_1.random = random;
-    class Fireworks {
-        constructor(container) {
-            Fireworks_1.rockets = [];
-            Fireworks_1.particles = [];
-            Fireworks_1.cw = container.clientWidth;
-            Fireworks_1.ch = container.clientHeight;
-            Fireworks_1.canvas = document.createElement('canvas');
-            Fireworks_1.ctx = Fireworks_1.canvas.getContext('2d');
-            Fireworks_1.canvas.width = Fireworks_1.cw;
-            Fireworks_1.canvas.height = Fireworks_1.ch;
-            container.appendChild(Fireworks_1.canvas);
-            window.requestAnimationFrame(() => this.update());
+    Fireworks.random = random;
+    function start(container, options) {
+        if (!options) {
+            options = {};
         }
-        update() {
-            if (Fireworks_1.rockets.length < MAX_ROCKETS) {
-                Fireworks_1.rockets.push(new Fireworks_1.Rocket());
+        Fireworks.rocketSpawnInterval = options.rocketSpawnInterval || 150;
+        Fireworks.maxRockets = options.maxRockets || 3;
+        Fireworks.numParticles = options.numParticles || 100;
+        Fireworks.explosionHeight = options.explosionHeight || 0.2;
+        Fireworks.explosionChance = options.explosionChance || 0.08;
+        Fireworks.rockets = [];
+        Fireworks.particles = [];
+        Fireworks.cw = container.clientWidth;
+        Fireworks.ch = container.clientHeight;
+        Fireworks.canvas = document.createElement('canvas');
+        Fireworks.ctx = Fireworks.canvas.getContext('2d');
+        Fireworks.canvas.width = Fireworks.cw;
+        Fireworks.canvas.height = Fireworks.ch;
+        container.appendChild(Fireworks.canvas);
+        window.requestAnimationFrame(update);
+        setInterval(() => {
+            if (Fireworks.rockets.length < Fireworks.maxRockets) {
+                Fireworks.rockets.push(new Fireworks.Rocket());
             }
-            Fireworks_1.ctx.globalCompositeOperation = 'destination-out';
-            Fireworks_1.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-            Fireworks_1.ctx.fillRect(0, 0, Fireworks_1.cw, Fireworks_1.ch);
-            Fireworks_1.ctx.globalCompositeOperation = 'lighter';
-            let x = null;
-            x = Fireworks_1.rockets.length;
-            while (x--) {
-                Fireworks_1.rockets[x].render();
-                Fireworks_1.rockets[x].update(x);
-            }
-            x = Fireworks_1.particles.length;
-            while (x--) {
-                Fireworks_1.particles[x].render();
-                Fireworks_1.particles[x].update(x);
-            }
-            window.requestAnimationFrame(() => this.update());
-        }
+        }, Fireworks.rocketSpawnInterval);
     }
-    Fireworks_1.Fireworks = Fireworks;
+    Fireworks.start = start;
+    function update() {
+        Fireworks.ctx.globalCompositeOperation = 'destination-out';
+        Fireworks.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        Fireworks.ctx.fillRect(0, 0, Fireworks.cw, Fireworks.ch);
+        Fireworks.ctx.globalCompositeOperation = 'lighter';
+        let x = null;
+        x = Fireworks.rockets.length;
+        while (x--) {
+            Fireworks.rockets[x].render();
+            Fireworks.rockets[x].update(x);
+        }
+        x = Fireworks.particles.length;
+        while (x--) {
+            Fireworks.particles[x].render();
+            Fireworks.particles[x].update(x);
+        }
+        window.requestAnimationFrame(update);
+    }
 })(Fireworks || (Fireworks = {}));
 var Fireworks;
 (function (Fireworks) {
@@ -121,13 +128,13 @@ var Fireworks;
         }
         update(index) {
             super.update(index);
-            if (this.position.y <= Fireworks.ch / 2 && Fireworks.random(0, 100) <= 80) {
+            if (this.position.y <= Fireworks.ch * (1 - Fireworks.explosionHeight) && Fireworks.random(0, 1) <= Fireworks.explosionChance) {
                 this.explode();
                 Fireworks.rockets.splice(index, 1);
             }
         }
         explode() {
-            const count = Fireworks.random(0, 10) + 100;
+            const count = Fireworks.random(0, 10) + Fireworks.numParticles;
             for (let i = 0; i < count; i += 1) {
                 const particle = new Fireworks.Particle(this.position);
                 const angle = Fireworks.random(0, Fireworks.TAU);
