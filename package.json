@@ -8,7 +8,10 @@
     "minify": "uglifyjs ./dist/fireworks.js -o ./dist/fireworks.min.js",
     "compile": "tsc",
     "build": "npm run clean && npm run compile && npm run minify",
-    "lint": "tslint ts/**/*.ts"
+    "lint": "tslint ts/**/*.ts",
+    "publish:patch": "node scripts/publish.js patch",
+    "publish:minor": "scripts/publish.js minor",
+    "publish:major": "node scripts/publish.js major"
   },
   "author": {
     "name": "Tyler Waters",
@@ -19,10 +22,10 @@
     "url": "git://github.com/tswaters/fireworks.git"
   },
   "license": "WTFPL",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "rimraf": "^2.5.2",
+    "semver-bumper": "^1.0.2",
     "tslint": "^3.13.0",
     "typescript": "^1.8.10",
     "uglify-js": "github:mishoo/UglifyJS2#harmony"
