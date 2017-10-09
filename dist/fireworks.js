@@ -24,11 +24,14 @@ var Fireworks;
         Fireworks.canvas.height = Fireworks.ch;
         container.appendChild(Fireworks.canvas);
         window.requestAnimationFrame(update);
-        setInterval(() => {
+        Fireworks.interval = setInterval(() => {
             if (Fireworks.rockets.length < Fireworks.maxRockets) {
                 Fireworks.rockets.push(new Fireworks.Rocket());
             }
         }, Fireworks.rocketSpawnInterval);
+        return () => {
+            clearInterval(Fireworks.interval);
+        };
     }
     Fireworks.start = start;
     function update() {
