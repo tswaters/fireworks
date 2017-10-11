@@ -31,6 +31,7 @@ var Fireworks;
         }, Fireworks.rocketSpawnInterval);
         return () => {
             clearInterval(Fireworks.interval);
+            Fireworks.interval = null;
         };
     }
     Fireworks.start = start;
@@ -50,7 +51,9 @@ var Fireworks;
             Fireworks.particles[x].render();
             Fireworks.particles[x].update(x);
         }
-        window.requestAnimationFrame(update);
+        if (Fireworks.interval) {
+            window.requestAnimationFrame(update);
+        }
     }
 })(Fireworks || (Fireworks = {}));
 var Fireworks;

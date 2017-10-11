@@ -52,6 +52,7 @@ namespace Fireworks {
 
     return () => {
       clearInterval(interval)
+      interval = null
     }
   }
 
@@ -75,7 +76,9 @@ namespace Fireworks {
       particles[x].update(x)
     }
 
-    window.requestAnimationFrame(update)
+    if (interval) {
+      window.requestAnimationFrame(update)
+    }
   }
 
 }
