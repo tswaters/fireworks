@@ -24,11 +24,15 @@ var Fireworks;
         Fireworks.canvas.height = Fireworks.ch;
         container.appendChild(Fireworks.canvas);
         window.requestAnimationFrame(update);
-        setInterval(() => {
+        Fireworks.interval = setInterval(() => {
             if (Fireworks.rockets.length < Fireworks.maxRockets) {
                 Fireworks.rockets.push(new Fireworks.Rocket());
             }
         }, Fireworks.rocketSpawnInterval);
+        return () => {
+            clearInterval(Fireworks.interval);
+            Fireworks.interval = null;
+        };
     }
     Fireworks.start = start;
     function update() {
@@ -47,7 +51,9 @@ var Fireworks;
             Fireworks.particles[x].render();
             Fireworks.particles[x].update(x);
         }
-        window.requestAnimationFrame(update);
+        if (Fireworks.interval) {
+            window.requestAnimationFrame(update);
+        }
     }
 })(Fireworks || (Fireworks = {}));
 var Fireworks;

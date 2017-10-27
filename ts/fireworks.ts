@@ -17,6 +17,7 @@ namespace Fireworks {
 
   export let rockets: Rocket[]
   export let particles: Particle[]
+  export let interval: number
 
   export function random (min: number, max: number): number {
     return Math.random() * (max - min) + min
@@ -43,11 +44,16 @@ namespace Fireworks {
     container.appendChild(canvas)
 
     window.requestAnimationFrame(update)
-    setInterval(() => {
+    interval = setInterval(() => {
       if (rockets.length < maxRockets) {
         rockets.push(new Rocket())
       }
     }, rocketSpawnInterval)
+
+    return () => {
+      clearInterval(interval)
+      interval = null
+    }
   }
 
   function update () {
@@ -70,7 +76,9 @@ namespace Fireworks {
       particles[x].update(x)
     }
 
-    window.requestAnimationFrame(update)
+    if (interval) {
+      window.requestAnimationFrame(update)
+    }
   }
 
 }
