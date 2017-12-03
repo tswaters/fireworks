@@ -1,6 +1,6 @@
 {
   "name": "fireworks-canvas",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "fireworks example",
   "main": "./dist/fireworks.js",
   "scripts": {
@@ -21,6 +21,9 @@
     "type": "git",
     "url": "git://github.com/tswaters/fireworks.git"
   },
+  "contributors": [
+    "Andrey (https://github.com/tugrik)"
+  ],
   "license": "WTFPL",
   "dependencies": {},
   "devDependencies": {
