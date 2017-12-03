@@ -8,7 +8,8 @@
     "noImplicitUseStrict": false,
     "noEmitOnError": true,
     "noImplicitAny": true,
-    "out": "./dist/fireworks.js"
+    "module": "commonjs",
+    "outDir": "./dist/fireworks.js"
   },
   "exclude": [
     "node_modules"

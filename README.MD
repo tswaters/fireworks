@@ -12,6 +12,13 @@ npm install --save fireworks-canvas
 ## usage
 
 ```js
+// exports a standard umd boiler:
+const Fireworks = require('fireworks-canvas') // cjs
+define(['fireworks-canvas'], (FireWorks) =>  {}) // amd
+const Fireworks = window.Fireforks // browser global
+
+// needs at least a container element, you can provide options
+// (options are optional, defaults defined below)
 const container = document.getElementById('container')
 const options = {
   maxRockets: 3,            // max # of rockets to spawn
@@ -20,26 +27,24 @@ const options = {
   explosionHeight: 0.2,     // minimum percentage of height of container at which rockets explode
   explosionChance: 0.08     // chance in each tick the rocket will explode
 }
-const fireworks = new Fireworks.start(container, options)
+
+// instantiate the class and call start
+// this returns a disposable - calling it will stop fireworks.
+const fireworks = new Fireworks(container, options)
+const stop = fireworks.start()
+stop() // stop rockets from spawning
+fireworks.stop() // also stops fireworks.
 ```
 
 ## support
 
-- doesn't work within a node context
-
-The package includes file that can be used in the browser, ./dist/fireworks.js. However, it is not an cjs module by any stretch... plus there is no `document` or `canvas` in the node world. You can of course package this file however you like - should work once it makes its way to a browser context.
-
-- requires es6 in the browser
-
-This should work in most evergreen browsers.  I haven't tested Safari or Opera but I don't see why they wouldn't work.
-
-- In Edge it blows up in a pretty spectacularly, see [this issue](https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/6664966/)
+Requires es6 in the browser
 
 ## development
 
 ```sh
-npm install
-npm run-script build
+npm i
+npm run build
 # open ./index.html in your favourite evergreen browser
 ```
 

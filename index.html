@@ -21,13 +21,17 @@
   <script>
 const container = document.getElementById('container')
 const options = {
-  maxRockets: 3,            // max # of rockets to spawn
+  maxRockets: 5,            // max # of rockets to spawn
   rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
   numParticles: 150,        // number of particles to spawn when rocket explodes (+0-10)
   explosionHeight: 0.2,     // minimum percentage of height of container at which rockets explode
   explosionChance: 0.08     // chance in each tick the rocket will explode
 }
-const fireworks = new Fireworks.start(container, options)
+const fireworks = new Fireworks(container, options)
+const stop = fireworks.start()
+
+document.addEventListener('keydown', (e) => e.which === 27 && stop())
+
   </script>
 </body>
 </html>

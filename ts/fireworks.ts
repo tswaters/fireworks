@@ -1,83 +1,86 @@
 
-namespace Fireworks {
+import Particle from './particle'
+import Graphics from './graphics'
+import Things from './things'
 
-  export const TAU = Math.PI * 2
+import {random} from './util'
+import {Point} from './types'
 
-  export let maxRockets: number
-  export let numParticles: number
-  export let explosionHeight: number
-  export let explosionChance: number
-  export let rocketSpawnInterval: number
-  export let initialRocketVelocity: Point
+type Options = {
+  maxRockets?: number
+  numParticles?: number
+  explosionHeight?: number
+  explosionChance?: number
+  rocketSpawnInterval?: number
+}
 
-  export let canvas: HTMLCanvasElement
-  export let ctx: CanvasRenderingContext2D
-  export let cw: number
-  export let ch: number
+export default class Fireworks {
 
-  export let rockets: Rocket[]
-  export let particles: Particle[]
-  export let interval: number
+  maxRockets: number
+  numParticles: number
+  explosionHeight: number
+  explosionChance: number
+  rocketSpawnInterval: number
+  graphics: Graphics
+  cw: number
+  ch: number
+  things: Things
+  interval: number
 
-  export function random (min: number, max: number): number {
-    return Math.random() * (max - min) + min
+  constructor (container: HTMLElement, {
+    rocketSpawnInterval = 150,
+    maxRockets = 3,
+    numParticles = 100,
+    explosionHeight = 0.2,
+    explosionChance = 0.08
+  }: Options = {}) {
+    this.rocketSpawnInterval = rocketSpawnInterval
+    this.maxRockets = maxRockets
+    this.numParticles = numParticles
+    this.explosionHeight = explosionHeight
+    this.explosionChance = explosionChance
+    this.cw = container.clientWidth
+    this.ch = container.clientHeight
+    this.graphics = new Graphics(container)
+    this.things = new Things({maxRockets: this.maxRockets, cw: this.cw, ch: this.ch})
+    container.appendChild(this.graphics.canvas)
   }
 
-  export function start (container: HTMLElement, options: Options) {
-
-    if (!options) { options = {} }
-    rocketSpawnInterval = options.rocketSpawnInterval || 150
-    maxRockets = options.maxRockets || 3
-    numParticles = options.numParticles || 100
-    explosionHeight = options.explosionHeight || 0.2
-    explosionChance = options.explosionChance || 0.08
-
-    rockets = []
-    particles = []
-    cw = container.clientWidth
-    ch = container.clientHeight
-
-    canvas = document.createElement('canvas')
-    ctx = canvas.getContext('2d')
-    canvas.width = cw
-    canvas.height = ch
-    container.appendChild(canvas)
-
-    window.requestAnimationFrame(update)
-    interval = setInterval(() => {
-      if (rockets.length < maxRockets) {
-        rockets.push(new Rocket())
-      }
-    }, rocketSpawnInterval)
-
-    return () => {
-      clearInterval(interval)
-      interval = null
-    }
+  start (): () => void {
+    window.requestAnimationFrame(() => this.update())
+    this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval)
+    return () => this.stop()
   }
 
-  function update () {
-    ctx.globalCompositeOperation = 'destination-out'
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
-    ctx.fillRect(0, 0, cw, ch)
-    ctx.globalCompositeOperation = 'lighter'
+  stop (): void {
+    window.clearInterval(this.interval)
+    this.interval = null
+  }
+
+  update () {
+    this.graphics.clear()
 
     let x: number = null
 
-    x = rockets.length
-    while (x--) {
-      rockets[x].render()
-      rockets[x].update(x)
+    for (const particle of this.things) {
+
+      if (!this.graphics.drawParticle(particle)) {
+        this.things.delete(particle)
+        continue
+      }
+
+      particle.update()
+
+      if (particle.shouldExplode(this.ch, this.explosionHeight, this.explosionChance)) {
+        particle.explode(this.numParticles).forEach(this.things.add, this.things)
+        this.things.delete(particle)
+      }
     }
 
-    x = particles.length
-    while (x--) {
-      particles[x].render()
-      particles[x].update(x)
-    }
-
-    if (interval) {
-      window.requestAnimationFrame(update)
+    if (this.interval || this.things.size > 0) {
+      window.requestAnimationFrame(() => this.update())
+    } else {
+      this.graphics.clear(true)
     }
   }
 
