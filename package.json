@@ -2,12 +2,11 @@
   "name": "fireworks-canvas",
   "version": "1.0.2",
   "description": "fireworks example",
-  "main": "./dist/fireworks.js",
+  "main": "./dist/fireworks..min.js",
   "scripts": {
-    "clean": "rimraf dist",
-    "minify": "uglifyjs ./dist/fireworks.js -o ./dist/fireworks.min.js",
-    "compile": "tsc",
-    "build": "npm run clean && npm run compile && npm run minify",
+    "prebuild": "rimraf dist",
+    "build": "webpack",
+    "build-watch": "npm run prebuild && webpack -w",
     "lint": "tslint ts/**/*.ts",
     "publish:patch": "node scripts/publish.js patch",
     "publish:minor": "node scripts/publish.js minor",
@@ -24,10 +23,12 @@
   "license": "WTFPL",
   "dependencies": {},
   "devDependencies": {
+    "awesome-typescript-loader": "^3.4.1",
     "rimraf": "^2.5.2",
     "semver-bumper": "^1.0.2",
     "tslint": "^3.13.0",
-    "typescript": "^1.8.10",
-    "uglify-js": "github:mishoo/UglifyJS2#harmony"
+    "typescript": "^2.6.2",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^3.9.1"
   }
 }

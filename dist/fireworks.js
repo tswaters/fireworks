@@ -1,161 +1,317 @@
-var Fireworks;
-(function (Fireworks) {
-    Fireworks.TAU = Math.PI * 2;
-    function random(min, max) {
-        return Math.random() * (max - min) + min;
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["Fireworks"] = factory();
+	else
+		root["Fireworks"] = factory();
+})(typeof self !== 'undefined' ? self : this, function() {
+return /******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+exports.random = random;
+exports.TAU = Math.PI * 2;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const graphics_1 = __webpack_require__(2);
+const things_1 = __webpack_require__(3);
+class Fireworks {
+    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionHeight = 0.2, explosionChance = 0.08 } = {}) {
+        this.rocketSpawnInterval = rocketSpawnInterval;
+        this.maxRockets = maxRockets;
+        this.numParticles = numParticles;
+        this.explosionHeight = explosionHeight;
+        this.explosionChance = explosionChance;
+        this.cw = container.clientWidth;
+        this.ch = container.clientHeight;
+        this.graphics = new graphics_1.default(container);
+        this.things = new things_1.default({ maxRockets: this.maxRockets, cw: this.cw, ch: this.ch });
+        container.appendChild(this.graphics.canvas);
     }
-    Fireworks.random = random;
-    function start(container, options) {
-        if (!options) {
-            options = {};
-        }
-        Fireworks.rocketSpawnInterval = options.rocketSpawnInterval || 150;
-        Fireworks.maxRockets = options.maxRockets || 3;
-        Fireworks.numParticles = options.numParticles || 100;
-        Fireworks.explosionHeight = options.explosionHeight || 0.2;
-        Fireworks.explosionChance = options.explosionChance || 0.08;
-        Fireworks.rockets = [];
-        Fireworks.particles = [];
-        Fireworks.cw = container.clientWidth;
-        Fireworks.ch = container.clientHeight;
-        Fireworks.canvas = document.createElement('canvas');
-        Fireworks.ctx = Fireworks.canvas.getContext('2d');
-        Fireworks.canvas.width = Fireworks.cw;
-        Fireworks.canvas.height = Fireworks.ch;
-        container.appendChild(Fireworks.canvas);
-        window.requestAnimationFrame(update);
-        Fireworks.interval = setInterval(() => {
-            if (Fireworks.rockets.length < Fireworks.maxRockets) {
-                Fireworks.rockets.push(new Fireworks.Rocket());
-            }
-        }, Fireworks.rocketSpawnInterval);
-        return () => {
-            clearInterval(Fireworks.interval);
-            Fireworks.interval = null;
-        };
+    start() {
+        window.requestAnimationFrame(() => this.update());
+        this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
+        return () => this.stop();
     }
-    Fireworks.start = start;
-    function update() {
-        Fireworks.ctx.globalCompositeOperation = 'destination-out';
-        Fireworks.ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        Fireworks.ctx.fillRect(0, 0, Fireworks.cw, Fireworks.ch);
-        Fireworks.ctx.globalCompositeOperation = 'lighter';
+    stop() {
+        window.clearInterval(this.interval);
+        this.interval = null;
+    }
+    update() {
+        this.graphics.clear();
         let x = null;
-        x = Fireworks.rockets.length;
-        while (x--) {
-            Fireworks.rockets[x].render();
-            Fireworks.rockets[x].update(x);
+        for (const particle of this.things) {
+            if (!this.graphics.drawParticle(particle)) {
+                this.things.delete(particle);
+                continue;
+            }
+            particle.update();
+            if (particle.shouldExplode(this.ch, this.explosionHeight, this.explosionChance)) {
+                particle.explode(this.numParticles).forEach(this.things.add, this.things);
+                this.things.delete(particle);
+            }
         }
-        x = Fireworks.particles.length;
-        while (x--) {
-            Fireworks.particles[x].render();
-            Fireworks.particles[x].update(x);
+        if (this.interval || this.things.size > 0) {
+            window.requestAnimationFrame(() => this.update());
         }
-        if (Fireworks.interval) {
-            window.requestAnimationFrame(update);
+        else {
+            this.graphics.clear(true);
         }
     }
-})(Fireworks || (Fireworks = {}));
-var Fireworks;
-(function (Fireworks) {
-    class Particle {
-        constructor(position) {
-            this.position = {
-                x: position ? position.x : 0,
-                y: position ? position.y : 0
-            };
+}
+exports.default = Fireworks;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+class Graphics {
+    constructor(container) {
+        this.cw = container.clientWidth;
+        this.ch = container.clientHeight;
+        const canvas = document.createElement('canvas');
+        canvas.width = this.cw;
+        canvas.width = this.ch;
+        this._canvas = document.createElement('canvas');
+        this.ctx = this._canvas.getContext('2d');
+        this.canvas.width = this.cw;
+        this.canvas.height = this.ch;
+    }
+    get canvas() {
+        return this._canvas;
+    }
+    clear(force = false) {
+        this.ctx.globalCompositeOperation = 'destination-out';
+        this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`;
+        this.ctx.fillRect(0, 0, this.cw, this.ch);
+        this.ctx.globalCompositeOperation = 'lighter';
+    }
+    drawParticle(particle) {
+        const lastPosition = particle.positions[particle.positions.length - 1];
+        this.ctx.beginPath();
+        this.ctx.moveTo(lastPosition.x, lastPosition.y);
+        this.ctx.lineTo(particle.position.x, particle.position.y);
+        this.ctx.lineWidth = particle.size;
+        this.ctx.strokeStyle = `hsla(${particle.hue}, 100%, ${particle.brightness}%, ${particle.alpha})`;
+        this.ctx.stroke();
+        if (particle.alpha <= 0.1 || particle.size <= 1) {
+            return false;
+        }
+        if (particle.position.x > this.cw || particle.position.x < 0) {
+            return false;
+        }
+        if (particle.position.y > this.ch || particle.position.y < 0) {
+            return false;
+        }
+        return true;
+    }
+}
+exports.default = Graphics;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const particle_1 = __webpack_require__(4);
+const util_1 = __webpack_require__(0);
+class Things extends Set {
+    constructor({ maxRockets, cw, ch }) {
+        super();
+        this.maxRockets = maxRockets;
+        this.cw = cw;
+        this.ch = ch;
+    }
+    spawnRockets() {
+        const rockets = this.rockets;
+        if (rockets < this.maxRockets) {
+            this.add(new particle_1.default({
+                isRocket: true,
+                position: {
+                    x: util_1.random(0, this.cw),
+                    y: this.ch
+                }
+            }));
+        }
+    }
+    get rockets() {
+        return [...this].filter(x => x.isRocket).length;
+    }
+}
+exports.default = Things;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const util_1 = __webpack_require__(0);
+class Particle {
+    constructor({ isRocket = false, hue = util_1.random(1, 360), brightness = util_1.random(50, 60), position }) {
+        this.isRocket = isRocket;
+        this.position = position;
+        this.positions = [
+            this.position,
+            this.position,
+            this.position
+        ];
+        this.velocity = { x: null, y: null };
+        if (this.isRocket) {
             this.velocity = {
-                x: 0,
-                y: 0
+                x: util_1.random(0, 6) - 3,
+                y: util_1.random(-3, 0) - 4
             };
-            this.shrink = 0.75;
-            this.size = 2;
-            this.resistance = 1;
-            this.gravity = 0;
-            this.alpha = 1;
-            this.fade = 0;
-            this.hue = Fireworks.random(0, 360);
-            this.brightness = Fireworks.random(50, 60);
-            this.positions = [];
-            let positionCount = 3;
-            while (positionCount--) {
-                this.positions.push(position);
-            }
-        }
-        update(index) {
-            this.positions.pop();
-            this.positions.unshift({ x: this.position.x, y: this.position.y });
-            this.velocity.x *= this.resistance;
-            this.velocity.y *= this.resistance;
-            this.velocity.y += this.gravity;
-            this.position.x += this.velocity.x;
-            this.position.y += this.velocity.y;
-            this.size *= this.shrink;
-            this.alpha -= this.fade;
-            if (!this.exists()) {
-                Fireworks.particles.splice(index, 1);
-            }
-        }
-        render() {
-            const lastPosition = this.positions[this.positions.length - 1];
-            Fireworks.ctx.beginPath();
-            Fireworks.ctx.moveTo(lastPosition.x, lastPosition.y);
-            Fireworks.ctx.lineTo(this.position.x, this.position.y);
-            Fireworks.ctx.lineWidth = this.size;
-            Fireworks.ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
-            Fireworks.ctx.stroke();
-        }
-        exists() {
-            if (this.alpha <= 0.1 || this.size <= 1) {
-                return false;
-            }
-            if (this.position.x > Fireworks.cw || this.position.x < 0) {
-                return false;
-            }
-            if (this.position.y > Fireworks.ch || this.position.y < 0) {
-                return false;
-            }
-            return true;
-        }
-    }
-    Fireworks.Particle = Particle;
-})(Fireworks || (Fireworks = {}));
-var Fireworks;
-(function (Fireworks) {
-    class Rocket extends Fireworks.Particle {
-        constructor() {
-            super({ x: Fireworks.random(0, Fireworks.cw), y: Fireworks.ch });
-            this.velocity.y = Fireworks.random(-3, 0) - 4;
-            this.velocity.x = Fireworks.random(0, 6) - 3;
-            this.size = 3;
             this.shrink = 0.999;
-            this.gravity = 0.01;
-            this.fade = 0;
+            this.resistance = 1;
         }
-        update(index) {
-            super.update(index);
-            if (this.position.y <= Fireworks.ch * (1 - Fireworks.explosionHeight) && Fireworks.random(0, 1) <= Fireworks.explosionChance) {
-                this.explode();
-                Fireworks.rockets.splice(index, 1);
-            }
+        else {
+            const angle = util_1.random(0, util_1.TAU);
+            const speed = Math.cos(util_1.random(0, util_1.TAU)) * 15;
+            this.velocity = {
+                x: Math.cos(angle) * speed,
+                y: Math.sin(angle) * speed
+            };
+            this.shrink = util_1.random(0, 0.05) + 0.93;
+            this.resistance = 0.92;
         }
-        explode() {
-            const count = Fireworks.random(0, 10) + Fireworks.numParticles;
-            for (let i = 0; i < count; i += 1) {
-                const particle = new Fireworks.Particle(this.position);
-                const angle = Fireworks.random(0, Fireworks.TAU);
-                const speed = Math.cos(Fireworks.random(0, Fireworks.TAU)) * 15;
-                particle.velocity.x = Math.cos(angle) * speed;
-                particle.velocity.y = Math.sin(angle) * speed;
-                particle.size = 3;
-                particle.gravity = 0.2;
-                particle.resistance = 0.92;
-                particle.shrink = Fireworks.random(0, 0.05) + 0.93;
-                particle.hue = this.hue;
-                particle.brightness = this.brightness;
-                Fireworks.particles.push(particle);
-            }
-        }
+        this.gravity = 0.01;
+        this.size = 3;
+        this.alpha = 1;
+        this.fade = 0;
+        this.hue = hue;
+        this.brightness = brightness;
     }
-    Fireworks.Rocket = Rocket;
-})(Fireworks || (Fireworks = {}));
+    shouldExplode(ch, explosionHeight, explosionChance) {
+        if (!this.isRocket) {
+            return false;
+        }
+        const inRange = this.position.y <= ch * (1 - explosionHeight);
+        if (!inRange) {
+            return false;
+        }
+        const shouldExplode = util_1.random(0, 1) <= explosionChance;
+        return shouldExplode;
+    }
+    explode(count) {
+        const newParticles = new Set();
+        for (let i = 0; i < count; i += 1) {
+            newParticles.add(new Particle({
+                position: {
+                    x: this.position.x,
+                    y: this.position.y
+                },
+                hue: this.hue,
+                brightness: this.brightness
+            }));
+        }
+        return newParticles;
+    }
+    update() {
+        this.positions.pop();
+        this.positions.unshift({ x: this.position.x, y: this.position.y });
+        this.velocity.x *= this.resistance;
+        this.velocity.y *= this.resistance;
+        this.velocity.y += this.gravity;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+        this.size *= this.shrink;
+        this.alpha -= this.fade;
+    }
+}
+exports.default = Particle;
+
+
+/***/ })
+/******/ ])["default"];
+});
