@@ -20,6 +20,9 @@
     "type": "git",
     "url": "git://github.com/tswaters/fireworks.git"
   },
+  "contributors": [
+    "Andrey (https://github.com/tugrik)"
+  ],
   "license": "WTFPL",
   "dependencies": {},
   "devDependencies": {
