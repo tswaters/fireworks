@@ -1,5 +1,5 @@
 
-## 2.0.0
+## 2.0.1
 
 * update build to use webpack.
 * update api - now exports class with `start` and `stop` methods.
