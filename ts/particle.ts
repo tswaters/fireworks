@@ -39,12 +39,10 @@ export default class Particle {
       this.position
     ]
 
-    this.velocity = {x: null, y: null}
-
     if (this.isRocket) {
       this.velocity = {
-        x: random(0, 6) - 3,
-        y: random(-3, 0) - 4
+        x: random(-3, 3),
+        y: random(-7, -3)
       }
       this.shrink = 0.999
       this.resistance = 1
@@ -68,47 +66,10 @@ export default class Particle {
   }
 
   /**
-   * Returns whether or not a rocket will explode.
-   * @param {number} ch available height
-   * @param {number} explosionHeight min height at which particles explode
-   * @param {number} explosionChance % change a rocket will explode
-   * @returns {boolean} whether or not the rocket will explode
-   */
-  shouldExplode (ch: number, explosionHeight: number, explosionChance: number): boolean {
-    if (!this.isRocket) { return false }
-
-    const inRange = this.position.y <= ch * (1 - explosionHeight)
-    if (!inRange) { return false }
-
-    const shouldExplode = random(0, 1) <= explosionChance
-    return shouldExplode
-  }
-
-  /**
-   * Turns a particle into many different particles exploding in different directions
-   * @param {number} count number of particles to spawn
-   * @returns {Set<Particle>} set of particles that were created.
-   */
-  explode (count: number): Set<Particle> {
-    const newParticles = new Set()
-    for (let i = 0; i < count; i += 1) {
-      newParticles.add(new Particle({
-        position: {
-          x: this.position.x,
-          y: this.position.y
-        },
-        hue: this.hue,
-        brightness: this.brightness
-      }))
-    }
-    return newParticles
-  }
-
-  /**
    * Update the position of the particle.
    * For rockets, has a potential to explode.
    */
-  update () {
+  update (): void {
     this.positions.pop()
     this.positions.unshift({x: this.position.x, y: this.position.y})
     this.velocity.x *= this.resistance

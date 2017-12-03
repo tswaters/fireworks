@@ -18,19 +18,22 @@
 </head>
 <body>
   <div id="container"></div>
+  <button id="spawn">Fire!</button>
   <script>
 const container = document.getElementById('container')
 const options = {
-  maxRockets: 5,            // max # of rockets to spawn
+  maxRockets: 3,            // max # of rockets to spawn
   rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
-  numParticles: 150,        // number of particles to spawn when rocket explodes (+0-10)
-  explosionHeight: 0.2,     // minimum percentage of height of container at which rockets explode
+  numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
+  explosionMinHeight: 0.2,  // percentage. min height at which rockets can explode
+  explosionMaxHeight: 0.9,  // percentage. max height before a particle is exploded
   explosionChance: 0.08     // chance in each tick the rocket will explode
 }
 const fireworks = new Fireworks(container, options)
 const stop = fireworks.start()
 
 document.addEventListener('keydown', (e) => e.which === 27 && stop())
+document.getElementById('spawn').addEventListener('click', () => fireworks.fire())
 
   </script>
 </body>

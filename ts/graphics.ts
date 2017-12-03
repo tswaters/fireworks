@@ -34,7 +34,7 @@ export default class Graphics {
    * Clears out the canvas & prepares for next iteration of drawing
    * @param {boolean} force won't use alpha, blacks canvas out totally
    */
-  clear (force: boolean = false) {
+  clear (force: boolean = false): void {
     this.ctx.globalCompositeOperation = 'destination-out'
     this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`
     this.ctx.fillRect(0, 0, this.cw, this.ch)
@@ -44,9 +44,8 @@ export default class Graphics {
   /**
    * Renders a particle. Returns whether or not it should exist.
    * @param {Particle} particle particle to render
-   * @returns {boolean} whether or not the particle exists.
    */
-  drawParticle (particle: Particle): boolean {
+  drawParticle (particle: Particle): void {
     const lastPosition = particle.positions[particle.positions.length - 1]
     this.ctx.beginPath()
     this.ctx.moveTo(lastPosition.x, lastPosition.y)
@@ -54,20 +53,6 @@ export default class Graphics {
     this.ctx.lineWidth = particle.size
     this.ctx.strokeStyle = `hsla(${particle.hue}, 100%, ${particle.brightness}%, ${particle.alpha})`
     this.ctx.stroke()
-
-    if (particle.alpha <= 0.1 || particle.size <= 1) {
-      return false
-    }
-
-    if (particle.position.x > this.cw || particle.position.x < 0) {
-      return false
-    }
-
-    if (particle.position.y > this.ch || particle.position.y < 0) {
-      return false
-    }
-
-    return true
   }
 
 }

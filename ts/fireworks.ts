@@ -9,7 +9,8 @@ import {Point} from './types'
 type Options = {
   maxRockets?: number
   numParticles?: number
-  explosionHeight?: number
+  explosionMinHeight?: number
+  explosionMaxHeight?: number
   explosionChance?: number
   rocketSpawnInterval?: number
 }
@@ -17,38 +18,44 @@ type Options = {
 export default class Fireworks {
 
   maxRockets: number
-  numParticles: number
-  explosionHeight: number
-  explosionChance: number
   rocketSpawnInterval: number
   graphics: Graphics
   cw: number
   ch: number
   things: Things
   interval: number
+  rafInterval: number
 
   constructor (container: HTMLElement, {
     rocketSpawnInterval = 150,
     maxRockets = 3,
     numParticles = 100,
-    explosionHeight = 0.2,
+    explosionMinHeight = 0.2,
+    explosionMaxHeight = 0.9,
     explosionChance = 0.08
   }: Options = {}) {
     this.rocketSpawnInterval = rocketSpawnInterval
     this.maxRockets = maxRockets
-    this.numParticles = numParticles
-    this.explosionHeight = explosionHeight
-    this.explosionChance = explosionChance
     this.cw = container.clientWidth
     this.ch = container.clientHeight
     this.graphics = new Graphics(container)
-    this.things = new Things({maxRockets: this.maxRockets, cw: this.cw, ch: this.ch})
+    this.things = new Things({
+      maxRockets: this.maxRockets,
+      numParticles,
+      explosionMinHeight,
+      explosionMaxHeight,
+      explosionChance,
+      cw: this.cw,
+      ch: this.ch
+    })
     container.appendChild(this.graphics.canvas)
   }
 
   start (): () => void {
-    window.requestAnimationFrame(() => this.update())
-    this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval)
+    if (this.maxRockets > 0) {
+      this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval)
+      this.rafInterval = window.requestAnimationFrame(() => this.update())
+    }
     return () => this.stop()
   }
 
@@ -57,30 +64,36 @@ export default class Fireworks {
     this.interval = null
   }
 
-  update () {
+  fire (): void {
+    this.things.spawnRocket()
+    if (!this.rafInterval) {
+      this.rafInterval = window.requestAnimationFrame(() => this.update())
+    }
+  }
+
+  update (): void {
     this.graphics.clear()
 
     let x: number = null
 
     for (const particle of this.things) {
-
-      if (!this.graphics.drawParticle(particle)) {
-        this.things.delete(particle)
-        continue
-      }
+      this.graphics.drawParticle(particle)
 
       particle.update()
 
-      if (particle.shouldExplode(this.ch, this.explosionHeight, this.explosionChance)) {
-        particle.explode(this.numParticles).forEach(this.things.add, this.things)
+      if (this.things.shouldRemove(particle)) {
         this.things.delete(particle)
+      }
+      else if (this.things.shouldExplode(particle)) {
+        this.things.explode(particle)
       }
     }
 
     if (this.interval || this.things.size > 0) {
-      window.requestAnimationFrame(() => this.update())
+      this.rafInterval = window.requestAnimationFrame(() => this.update())
     } else {
       this.graphics.clear(true)
+      this.rafInterval = null
     }
   }
 

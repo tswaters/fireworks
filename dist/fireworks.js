@@ -97,46 +97,60 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const graphics_1 = __webpack_require__(2);
 const things_1 = __webpack_require__(3);
 class Fireworks {
-    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionHeight = 0.2, explosionChance = 0.08 } = {}) {
+    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08 } = {}) {
         this.rocketSpawnInterval = rocketSpawnInterval;
         this.maxRockets = maxRockets;
-        this.numParticles = numParticles;
-        this.explosionHeight = explosionHeight;
-        this.explosionChance = explosionChance;
         this.cw = container.clientWidth;
         this.ch = container.clientHeight;
         this.graphics = new graphics_1.default(container);
-        this.things = new things_1.default({ maxRockets: this.maxRockets, cw: this.cw, ch: this.ch });
+        this.things = new things_1.default({
+            maxRockets: this.maxRockets,
+            numParticles,
+            explosionMinHeight,
+            explosionMaxHeight,
+            explosionChance,
+            cw: this.cw,
+            ch: this.ch
+        });
         container.appendChild(this.graphics.canvas);
+        console.log(this.ch * (1 - explosionMaxHeight));
     }
     start() {
-        window.requestAnimationFrame(() => this.update());
-        this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
+        if (this.maxRockets > 0) {
+            this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
+            this.rafInterval = window.requestAnimationFrame(() => this.update());
+        }
         return () => this.stop();
     }
     stop() {
         window.clearInterval(this.interval);
         this.interval = null;
     }
+    fire() {
+        this.things.spawnRocket();
+        if (!this.rafInterval) {
+            this.rafInterval = window.requestAnimationFrame(() => this.update());
+        }
+    }
     update() {
         this.graphics.clear();
         let x = null;
         for (const particle of this.things) {
-            if (!this.graphics.drawParticle(particle)) {
-                this.things.delete(particle);
-                continue;
-            }
+            this.graphics.drawParticle(particle);
             particle.update();
-            if (particle.shouldExplode(this.ch, this.explosionHeight, this.explosionChance)) {
-                particle.explode(this.numParticles).forEach(this.things.add, this.things);
+            if (this.things.shouldRemove(particle)) {
                 this.things.delete(particle);
+            }
+            else if (this.things.shouldExplode(particle)) {
+                this.things.explode(particle);
             }
         }
         if (this.interval || this.things.size > 0) {
-            window.requestAnimationFrame(() => this.update());
+            this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
         else {
             this.graphics.clear(true);
+            this.rafInterval = null;
         }
     }
 }
@@ -179,16 +193,6 @@ class Graphics {
         this.ctx.lineWidth = particle.size;
         this.ctx.strokeStyle = `hsla(${particle.hue}, 100%, ${particle.brightness}%, ${particle.alpha})`;
         this.ctx.stroke();
-        if (particle.alpha <= 0.1 || particle.size <= 1) {
-            return false;
-        }
-        if (particle.position.x > this.cw || particle.position.x < 0) {
-            return false;
-        }
-        if (particle.position.y > this.ch || particle.position.y < 0) {
-            return false;
-        }
-        return true;
     }
 }
 exports.default = Graphics;
@@ -204,22 +208,66 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const particle_1 = __webpack_require__(4);
 const util_1 = __webpack_require__(0);
 class Things extends Set {
-    constructor({ maxRockets, cw, ch }) {
+    constructor({ maxRockets, numParticles, explosionMinHeight, explosionMaxHeight, explosionChance, cw, ch }) {
         super();
         this.maxRockets = maxRockets;
+        this.numParticles = numParticles;
+        this.explosionMaxHeight = explosionMaxHeight,
+            this.explosionMinHeight = explosionMinHeight,
+            this.explosionChance = explosionChance;
         this.cw = cw;
         this.ch = ch;
+    }
+    shouldRemove(particle) {
+        if (particle.alpha <= 0.1 || particle.size <= 1) {
+            return true;
+        }
+        if (particle.position.x > this.cw || particle.position.x < 0) {
+            return true;
+        }
+        if (particle.position.y > this.ch || particle.position.y < 0) {
+            return true;
+        }
+        return false;
+    }
+    shouldExplode(particle) {
+        if (!particle.isRocket) {
+            return false;
+        }
+        if (particle.position.y <= this.ch * (1 - this.explosionMaxHeight)) {
+            return true;
+        }
+        if (particle.position.y >= this.ch * (1 - this.explosionMinHeight)) {
+            return false;
+        }
+        return util_1.random(0, 1) <= this.explosionChance;
+    }
+    explode(particle) {
+        for (let i = 0; i < this.numParticles; i += 1) {
+            this.add(new particle_1.default({
+                position: {
+                    x: particle.position.x,
+                    y: particle.position.y
+                },
+                hue: particle.hue,
+                brightness: particle.brightness
+            }));
+        }
+        this.delete(particle);
+    }
+    spawnRocket() {
+        this.add(new particle_1.default({
+            isRocket: true,
+            position: {
+                x: util_1.random(0, this.cw),
+                y: this.ch
+            }
+        }));
     }
     spawnRockets() {
         const rockets = this.rockets;
         if (rockets < this.maxRockets) {
-            this.add(new particle_1.default({
-                isRocket: true,
-                position: {
-                    x: util_1.random(0, this.cw),
-                    y: this.ch
-                }
-            }));
+            this.spawnRocket();
         }
     }
     get rockets() {
@@ -246,11 +294,10 @@ class Particle {
             this.position,
             this.position
         ];
-        this.velocity = { x: null, y: null };
         if (this.isRocket) {
             this.velocity = {
-                x: util_1.random(0, 6) - 3,
-                y: util_1.random(-3, 0) - 4
+                x: util_1.random(-3, 3),
+                y: util_1.random(-7, -3)
             };
             this.shrink = 0.999;
             this.resistance = 1;
@@ -271,31 +318,6 @@ class Particle {
         this.fade = 0;
         this.hue = hue;
         this.brightness = brightness;
-    }
-    shouldExplode(ch, explosionHeight, explosionChance) {
-        if (!this.isRocket) {
-            return false;
-        }
-        const inRange = this.position.y <= ch * (1 - explosionHeight);
-        if (!inRange) {
-            return false;
-        }
-        const shouldExplode = util_1.random(0, 1) <= explosionChance;
-        return shouldExplode;
-    }
-    explode(count) {
-        const newParticles = new Set();
-        for (let i = 0; i < count; i += 1) {
-            newParticles.add(new Particle({
-                position: {
-                    x: this.position.x,
-                    y: this.position.y
-                },
-                hue: this.hue,
-                brightness: this.brightness
-            }));
-        }
-        return newParticles;
     }
     update() {
         this.positions.pop();
