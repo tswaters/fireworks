@@ -1,0 +1,41 @@
+{
+  "name": "fireworks-canvas",
+  "version": "2.1.2",
+  "description": "fireworks example",
+  "main": "./fireworks.min.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "webpack",
+    "build-watch": "npm run prebuild && webpack -w",
+    "lint": "tslint ts/**/*.ts"
+  },
+  "files": [
+    "fireworks.min.js",
+    "fireworks.js",
+    "README.MD",
+    "LICENSE",
+    "package.json"
+  ],
+  "author": {
+    "name": "Tyler Waters",
+    "email": "tyler.waters@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tswaters/fireworks.git"
+  },
+  "contributors": [
+    "Andrey (https://github.com/tugrik)"
+  ],
+  "license": "WTFPL",
+  "dependencies": {},
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.4.1",
+    "rimraf": "^2.5.2",
+    "semver-bumper": "^1.0.2",
+    "tslint": "^3.13.0",
+    "typescript": "^2.6.2",
+    "uglifyjs-webpack-plugin": "^1.1.2",
+    "webpack": "^3.9.1"
+  }
+}
