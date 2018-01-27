@@ -1,17 +1,21 @@
 {
   "name": "fireworks-canvas",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "fireworks example",
-  "main": "./dist/fireworks..min.js",
+  "main": "./fireworks.min.js",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "webpack",
     "build-watch": "npm run prebuild && webpack -w",
-    "lint": "tslint ts/**/*.ts",
-    "publish:patch": "node scripts/publish.js patch",
-    "publish:minor": "node scripts/publish.js minor",
-    "publish:major": "node scripts/publish.js major"
+    "lint": "tslint ts/**/*.ts"
   },
+  "files": [
+    "fireworks.min.js",
+    "fireworks.js",
+    "README.MD",
+    "LICENSE",
+    "package.json"
+  ],
   "author": {
     "name": "Tyler Waters",
     "email": "tyler.waters@gmail.com"
