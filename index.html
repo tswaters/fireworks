@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <title>Fireworks</title>
+  <meta charset="utf-8">
+  <script src="./fireworks.js"></script>
+  <style>
+    body {
+      background-color: black;
+    }
+    #container {
+      margin: 0 auto;
+      border: 1px solid white;
+      width: 100%;
+      height: 500px
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <button id="spawn">Fire!</button>
+  <script>
+const container = document.getElementById('container')
+const options = {
+  maxRockets: 3,            // max # of rockets to spawn
+  rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
+  numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
+  explosionMinHeight: 0.2,  // percentage. min height at which rockets can explode
+  explosionMaxHeight: 0.9,  // percentage. max height before a particle is exploded
+  explosionChance: 0.08     // chance in each tick the rocket will explode
+}
+const fireworks = new Fireworks(container, options)
+const stop = fireworks.start()
+
+document.addEventListener('keydown', (e) => e.which === 27 && stop())
+document.getElementById('spawn').addEventListener('click', () => fireworks.fire())
+
+  </script>
+</body>
+</html>
