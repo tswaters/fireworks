@@ -34,8 +34,8 @@ export default class Things extends Set<Particle> {
     super()
     this.maxRockets = maxRockets
     this.numParticles = numParticles
-    this.explosionMaxHeight = explosionMaxHeight,
-    this.explosionMinHeight = explosionMinHeight,
+    this.explosionMaxHeight = explosionMaxHeight
+    this.explosionMinHeight = explosionMinHeight
     this.explosionChance = explosionChance
     this.cw = cw
     this.ch = ch
