@@ -64,6 +64,14 @@ export default class Fireworks {
     this.interval = null
   }
 
+  kill (): void {
+    this.things.clear()
+    this.stop()
+    window.cancelAnimationFrame(this.rafInterval)
+    this.rafInterval = null
+    this.graphics.clear(true)
+  }
+
   fire (): void {
     this.things.spawnRocket()
     if (!this.rafInterval) {
