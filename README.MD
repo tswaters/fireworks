@@ -35,6 +35,8 @@ const fireworks = new Fireworks(container, options)
 const stop = fireworks.start()
 stop() // stop rockets from spawning
 fireworks.stop() // also stops fireworks.
+fireworks.kill() // forcibly stop fireworks
+fireworks.fire() // fire a single rocket.
 ```
 
 ## support
