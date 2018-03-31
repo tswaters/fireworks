@@ -30,12 +30,12 @@
   "license": "WTFPL",
   "dependencies": {},
   "devDependencies": {
-    "awesome-typescript-loader": "^3.4.1",
-    "rimraf": "^2.5.2",
+    "awesome-typescript-loader": "^3.5.0",
+    "rimraf": "^2.6.2",
     "semver-bumper": "^1.0.2",
-    "tslint": "^3.13.0",
-    "typescript": "^2.6.2",
-    "uglifyjs-webpack-plugin": "^1.1.2",
-    "webpack": "^3.9.1"
+    "tslint": "^3.15.1",
+    "typescript": "^2.8.1",
+    "uglifyjs-webpack-plugin": "^1.2.4",
+    "webpack": "^3.11.0"
   }
 }
