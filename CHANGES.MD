@@ -1,4 +1,10 @@
 
+## 2.2.0
+
+* adding a kill method that forcibly kills the fireworks
+* updating live demo to use all available features
+* upgrade devDependencies
+
 ## 2.1.0
 
 this should technically be breaking but I get the sense I don't have many consumers so I can get away with it :)
