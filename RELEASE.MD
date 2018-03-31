@@ -33,14 +33,15 @@ npm pack # make sure it's OK
 npm publish
 
 # incremental
+git checkout dist && git pull && git checkout master # ya never know; better this than divergent branches!
 git symbolic-ref HEAD refs/heads/dist
 git --work-tree "dist" reset --mixed --quiet
 git --work-tree "dist" add --all
-git add package.json bower.json README.MD CHANGES.MD LICENSE.MD
+git add package.json bower.json README.MD CHANGES.MD LICENSE
 git commit -m "Release 0.0.x"
 git tag v0.0.x
 git push --tags
-git reset HEAD fireworks.js fireworks.min.js # so they show up in filesystem
+git checkout fireworks.js fireworks.min.js # so they show up in filesystem
 npm pack # make sure it's OK
 npm publish
 
