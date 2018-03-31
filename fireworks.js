@@ -125,6 +125,13 @@ class Fireworks {
         window.clearInterval(this.interval);
         this.interval = null;
     }
+    kill() {
+        this.things.clear();
+        this.stop();
+        window.cancelAnimationFrame(this.rafInterval);
+        this.rafInterval = null;
+        this.graphics.clear(true);
+    }
     fire() {
         this.things.spawnRocket();
         if (!this.rafInterval) {
@@ -211,9 +218,9 @@ class Things extends Set {
         super();
         this.maxRockets = maxRockets;
         this.numParticles = numParticles;
-        this.explosionMaxHeight = explosionMaxHeight,
-            this.explosionMinHeight = explosionMinHeight,
-            this.explosionChance = explosionChance;
+        this.explosionMaxHeight = explosionMaxHeight;
+        this.explosionMinHeight = explosionMinHeight;
+        this.explosionChance = explosionChance;
         this.cw = cw;
         this.ch = ch;
     }
