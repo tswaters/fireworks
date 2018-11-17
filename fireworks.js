@@ -7,7 +7,7 @@
 		exports["Fireworks"] = factory();
 	else
 		root["Fireworks"] = factory();
-})(typeof self !== 'undefined' ? self : this, function() {
+})(window, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -46,12 +46,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -68,6 +88,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
+/******/
 /******/
 /******/ 	// Load entry module and return exports
 /******/ 	return __webpack_require__(__webpack_require__.s = 1);
@@ -94,25 +115,32 @@ exports.TAU = Math.PI * 2;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-const graphics_1 = __webpack_require__(2);
-const things_1 = __webpack_require__(3);
+const things_1 = __webpack_require__(2);
 class Fireworks {
     constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08 } = {}) {
         this.rocketSpawnInterval = rocketSpawnInterval;
         this.maxRockets = maxRockets;
         this.cw = container.clientWidth;
         this.ch = container.clientHeight;
-        this.graphics = new graphics_1.default(container);
+        this.max_h = this.ch * (1 - explosionMaxHeight);
+        this.min_h = this.ch * (1 - explosionMinHeight);
+        this.chance = explosionChance;
+        this.canvas = document.createElement('canvas');
+        this.canvas.width = this.cw;
+        this.canvas.height = this.ch;
+        this.ctx = this.canvas.getContext('2d');
+        container.appendChild(this.canvas);
         this.things = new things_1.default({
             maxRockets: this.maxRockets,
             numParticles,
-            explosionMinHeight,
-            explosionMaxHeight,
-            explosionChance,
             cw: this.cw,
             ch: this.ch
         });
-        container.appendChild(this.graphics.canvas);
+    }
+    destroy() {
+        this.canvas.parentElement.removeChild(this.canvas);
+        window.clearInterval(this.interval);
+        window.cancelAnimationFrame(this.rafInterval);
     }
     start() {
         if (this.maxRockets > 0) {
@@ -130,7 +158,7 @@ class Fireworks {
         this.stop();
         window.cancelAnimationFrame(this.rafInterval);
         this.rafInterval = null;
-        this.graphics.clear(true);
+        this._clear(true);
     }
     fire() {
         this.things.spawnRocket();
@@ -138,16 +166,21 @@ class Fireworks {
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
     }
+    _clear(force = false) {
+        this.ctx.globalCompositeOperation = 'destination-out';
+        this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`;
+        this.ctx.fillRect(0, 0, this.cw, this.ch);
+        this.ctx.globalCompositeOperation = 'lighter';
+    }
     update() {
-        this.graphics.clear();
-        let x = null;
+        this._clear();
         for (const particle of this.things) {
-            this.graphics.drawParticle(particle);
+            particle.draw(this.ctx);
             particle.update();
-            if (this.things.shouldRemove(particle)) {
+            if (particle.shouldRemove(this.cw, this.ch)) {
                 this.things.delete(particle);
             }
-            else if (this.things.shouldExplode(particle)) {
+            else if (particle.shouldExplode(this.max_h, this.min_h, this.chance)) {
                 this.things.explode(particle);
             }
         }
@@ -155,7 +188,7 @@ class Fireworks {
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
         else {
-            this.graphics.clear(true);
+            this._clear(true);
             this.rafInterval = null;
         }
     }
@@ -170,98 +203,26 @@ exports.default = Fireworks;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-class Graphics {
-    constructor(container) {
-        this.cw = container.clientWidth;
-        this.ch = container.clientHeight;
-        const canvas = document.createElement('canvas');
-        canvas.width = this.cw;
-        canvas.width = this.ch;
-        this._canvas = document.createElement('canvas');
-        this.ctx = this._canvas.getContext('2d');
-        this.canvas.width = this.cw;
-        this.canvas.height = this.ch;
-    }
-    get canvas() {
-        return this._canvas;
-    }
-    clear(force = false) {
-        this.ctx.globalCompositeOperation = 'destination-out';
-        this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`;
-        this.ctx.fillRect(0, 0, this.cw, this.ch);
-        this.ctx.globalCompositeOperation = 'lighter';
-    }
-    drawParticle(particle) {
-        const lastPosition = particle.positions[particle.positions.length - 1];
-        this.ctx.beginPath();
-        this.ctx.moveTo(lastPosition.x, lastPosition.y);
-        this.ctx.lineTo(particle.position.x, particle.position.y);
-        this.ctx.lineWidth = particle.size;
-        this.ctx.strokeStyle = `hsla(${particle.hue}, 100%, ${particle.brightness}%, ${particle.alpha})`;
-        this.ctx.stroke();
-    }
-}
-exports.default = Graphics;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const particle_1 = __webpack_require__(4);
+const particle_1 = __webpack_require__(3);
 const util_1 = __webpack_require__(0);
 class Things extends Set {
-    constructor({ maxRockets, numParticles, explosionMinHeight, explosionMaxHeight, explosionChance, cw, ch }) {
+    constructor({ maxRockets, numParticles, cw, ch }) {
         super();
+        this.rockets = 0;
         this.maxRockets = maxRockets;
         this.numParticles = numParticles;
-        this.explosionMaxHeight = explosionMaxHeight;
-        this.explosionMinHeight = explosionMinHeight;
-        this.explosionChance = explosionChance;
         this.cw = cw;
         this.ch = ch;
     }
-    shouldRemove(particle) {
-        if (particle.alpha <= 0.1 || particle.size <= 1) {
-            return true;
-        }
-        if (particle.position.x > this.cw || particle.position.x < 0) {
-            return true;
-        }
-        if (particle.position.y > this.ch || particle.position.y < 0) {
-            return true;
-        }
-        return false;
-    }
-    shouldExplode(particle) {
-        if (!particle.isRocket) {
-            return false;
-        }
-        if (particle.position.y <= this.ch * (1 - this.explosionMaxHeight)) {
-            return true;
-        }
-        if (particle.position.y >= this.ch * (1 - this.explosionMinHeight)) {
-            return false;
-        }
-        return util_1.random(0, 1) <= this.explosionChance;
-    }
     explode(particle) {
+        this.rockets--;
         for (let i = 0; i < this.numParticles; i += 1) {
-            this.add(new particle_1.default({
-                position: {
-                    x: particle.position.x,
-                    y: particle.position.y
-                },
-                hue: particle.hue,
-                brightness: particle.brightness
-            }));
+            this.add(particle.clone());
         }
         this.delete(particle);
     }
     spawnRocket() {
+        this.rockets++;
         this.add(new particle_1.default({
             isRocket: true,
             position: {
@@ -271,20 +232,16 @@ class Things extends Set {
         }));
     }
     spawnRockets() {
-        const rockets = this.rockets;
-        if (rockets < this.maxRockets) {
+        if (this.rockets < this.maxRockets) {
             this.spawnRocket();
         }
-    }
-    get rockets() {
-        return [...this].filter(x => x.isRocket).length;
     }
 }
 exports.default = Things;
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -325,6 +282,40 @@ class Particle {
         this.hue = hue;
         this.brightness = brightness;
     }
+    clone() {
+        return new Particle({
+            position: {
+                x: this.position.x,
+                y: this.position.y
+            },
+            hue: this.hue,
+            brightness: this.brightness
+        });
+    }
+    shouldRemove(cw, ch) {
+        if (this.alpha <= 0.1 || this.size <= 1) {
+            return true;
+        }
+        if (this.position.x > cw || this.position.x < 0) {
+            return true;
+        }
+        if (this.position.y > ch || this.position.y < 0) {
+            return true;
+        }
+        return false;
+    }
+    shouldExplode(maxHeight, minHeight, chance) {
+        if (!this.isRocket) {
+            return false;
+        }
+        if (this.position.y <= maxHeight) {
+            return true;
+        }
+        if (this.position.y >= minHeight) {
+            return false;
+        }
+        return util_1.random(0, 1) <= chance;
+    }
     update() {
         this.positions.pop();
         this.positions.unshift({ x: this.position.x, y: this.position.y });
@@ -335,6 +326,15 @@ class Particle {
         this.position.y += this.velocity.y;
         this.size *= this.shrink;
         this.alpha -= this.fade;
+    }
+    draw(ctx) {
+        const lastPosition = this.positions[this.positions.length - 1];
+        ctx.beginPath();
+        ctx.moveTo(lastPosition.x, lastPosition.y);
+        ctx.lineTo(this.position.x, this.position.y);
+        ctx.lineWidth = this.size;
+        ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
+        ctx.stroke();
     }
 }
 exports.default = Particle;

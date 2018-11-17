@@ -39,6 +39,20 @@ fireworks.kill() // forcibly stop fireworks
 fireworks.fire() // fire a single rocket.
 ```
 
+## usage with typscript
+
+```ts
+import * as FireworksCanvas from 'fireworks-canvas'
+const fireworks = new FireworksCanvas(container)
+```
+
+OR
+
+```ts
+import FireworksCanvas = require('fireworks-canvas')
+const fireworks = new FireworksCanvas(container)
+```
+
 ## support
 
 Requires es6 in the browser
@@ -47,7 +61,8 @@ Requires es6 in the browser
 
 ```sh
 npm i
-npm run build
-# open ./index.html in your favourite evergreen browser
+npm run build:dev
+# edit ./gh-pages/index.html, change reference to '../dist/fireworks.js`
+# open ./gh-pages/index.html in your favourite evergreen browser
 ```
 
