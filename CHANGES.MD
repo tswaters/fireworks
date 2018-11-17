@@ -1,4 +1,8 @@
 
+## 2.2.2
+
+* fix the typings file (oops!)
+
 ## 2.2.1
 
 * tons of internal refactors

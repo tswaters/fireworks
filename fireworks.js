@@ -91,255 +91,58 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = "./ts/fireworks.ts");
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ "./ts/fireworks.ts":
+/*!*************************!*\
+  !*** ./ts/fireworks.ts ***!
+  \*************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function random(min, max) {
-    return Math.random() * (max - min) + min;
-}
-exports.random = random;
-exports.TAU = Math.PI * 2;
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst things_1 = __webpack_require__(/*! ./things */ \"./ts/things.ts\");\nclass Fireworks {\n    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08 } = {}) {\n        this.rocketSpawnInterval = rocketSpawnInterval;\n        this.maxRockets = maxRockets;\n        this.cw = container.clientWidth;\n        this.ch = container.clientHeight;\n        this.max_h = this.ch * (1 - explosionMaxHeight);\n        this.min_h = this.ch * (1 - explosionMinHeight);\n        this.chance = explosionChance;\n        this.canvas = document.createElement('canvas');\n        this.canvas.width = this.cw;\n        this.canvas.height = this.ch;\n        this.ctx = this.canvas.getContext('2d');\n        container.appendChild(this.canvas);\n        this.things = new things_1.default({\n            maxRockets: this.maxRockets,\n            numParticles,\n            cw: this.cw,\n            ch: this.ch\n        });\n    }\n    destroy() {\n        this.canvas.parentElement.removeChild(this.canvas);\n        window.clearInterval(this.interval);\n        window.cancelAnimationFrame(this.rafInterval);\n    }\n    start() {\n        if (this.maxRockets > 0) {\n            this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);\n            this.rafInterval = window.requestAnimationFrame(() => this.update());\n        }\n        return () => this.stop();\n    }\n    stop() {\n        window.clearInterval(this.interval);\n        this.interval = null;\n    }\n    kill() {\n        this.things.clear();\n        this.stop();\n        window.cancelAnimationFrame(this.rafInterval);\n        this.rafInterval = null;\n        this._clear(true);\n    }\n    fire() {\n        this.things.spawnRocket();\n        if (!this.rafInterval) {\n            this.rafInterval = window.requestAnimationFrame(() => this.update());\n        }\n    }\n    _clear(force = false) {\n        this.ctx.globalCompositeOperation = 'destination-out';\n        this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`;\n        this.ctx.fillRect(0, 0, this.cw, this.ch);\n        this.ctx.globalCompositeOperation = 'lighter';\n    }\n    update() {\n        this._clear();\n        for (const particle of this.things) {\n            particle.draw(this.ctx);\n            particle.update();\n            if (particle.shouldRemove(this.cw, this.ch)) {\n                this.things.delete(particle);\n            }\n            else if (particle.shouldExplode(this.max_h, this.min_h, this.chance)) {\n                this.things.explode(particle);\n            }\n        }\n        if (this.interval || this.things.size > 0) {\n            this.rafInterval = window.requestAnimationFrame(() => this.update());\n        }\n        else {\n            this._clear(true);\n            this.rafInterval = null;\n        }\n    }\n}\nexports.default = Fireworks;\n\n\n//# sourceURL=webpack://Fireworks/./ts/fireworks.ts?");
 
 /***/ }),
-/* 1 */
+
+/***/ "./ts/particle.ts":
+/*!************************!*\
+  !*** ./ts/particle.ts ***!
+  \************************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const things_1 = __webpack_require__(2);
-class Fireworks {
-    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08 } = {}) {
-        this.rocketSpawnInterval = rocketSpawnInterval;
-        this.maxRockets = maxRockets;
-        this.cw = container.clientWidth;
-        this.ch = container.clientHeight;
-        this.max_h = this.ch * (1 - explosionMaxHeight);
-        this.min_h = this.ch * (1 - explosionMinHeight);
-        this.chance = explosionChance;
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = this.cw;
-        this.canvas.height = this.ch;
-        this.ctx = this.canvas.getContext('2d');
-        container.appendChild(this.canvas);
-        this.things = new things_1.default({
-            maxRockets: this.maxRockets,
-            numParticles,
-            cw: this.cw,
-            ch: this.ch
-        });
-    }
-    destroy() {
-        this.canvas.parentElement.removeChild(this.canvas);
-        window.clearInterval(this.interval);
-        window.cancelAnimationFrame(this.rafInterval);
-    }
-    start() {
-        if (this.maxRockets > 0) {
-            this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
-            this.rafInterval = window.requestAnimationFrame(() => this.update());
-        }
-        return () => this.stop();
-    }
-    stop() {
-        window.clearInterval(this.interval);
-        this.interval = null;
-    }
-    kill() {
-        this.things.clear();
-        this.stop();
-        window.cancelAnimationFrame(this.rafInterval);
-        this.rafInterval = null;
-        this._clear(true);
-    }
-    fire() {
-        this.things.spawnRocket();
-        if (!this.rafInterval) {
-            this.rafInterval = window.requestAnimationFrame(() => this.update());
-        }
-    }
-    _clear(force = false) {
-        this.ctx.globalCompositeOperation = 'destination-out';
-        this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`;
-        this.ctx.fillRect(0, 0, this.cw, this.ch);
-        this.ctx.globalCompositeOperation = 'lighter';
-    }
-    update() {
-        this._clear();
-        for (const particle of this.things) {
-            particle.draw(this.ctx);
-            particle.update();
-            if (particle.shouldRemove(this.cw, this.ch)) {
-                this.things.delete(particle);
-            }
-            else if (particle.shouldExplode(this.max_h, this.min_h, this.chance)) {
-                this.things.explode(particle);
-            }
-        }
-        if (this.interval || this.things.size > 0) {
-            this.rafInterval = window.requestAnimationFrame(() => this.update());
-        }
-        else {
-            this._clear(true);
-            this.rafInterval = null;
-        }
-    }
-}
-exports.default = Fireworks;
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst util_1 = __webpack_require__(/*! ./util */ \"./ts/util.ts\");\nclass Particle {\n    constructor({ isRocket = false, hue = util_1.random(1, 360), brightness = util_1.random(50, 60), position }) {\n        this.isRocket = isRocket;\n        this.position = position;\n        this.positions = [\n            this.position,\n            this.position,\n            this.position\n        ];\n        if (this.isRocket) {\n            this.velocity = {\n                x: util_1.random(-3, 3),\n                y: util_1.random(-7, -3)\n            };\n            this.shrink = 0.999;\n            this.resistance = 1;\n        }\n        else {\n            const angle = util_1.random(0, util_1.TAU);\n            const speed = Math.cos(util_1.random(0, util_1.TAU)) * 15;\n            this.velocity = {\n                x: Math.cos(angle) * speed,\n                y: Math.sin(angle) * speed\n            };\n            this.shrink = util_1.random(0, 0.05) + 0.93;\n            this.resistance = 0.92;\n        }\n        this.gravity = 0.01;\n        this.size = 3;\n        this.alpha = 1;\n        this.fade = 0;\n        this.hue = hue;\n        this.brightness = brightness;\n    }\n    clone() {\n        return new Particle({\n            position: {\n                x: this.position.x,\n                y: this.position.y\n            },\n            hue: this.hue,\n            brightness: this.brightness\n        });\n    }\n    shouldRemove(cw, ch) {\n        if (this.alpha <= 0.1 || this.size <= 1) {\n            return true;\n        }\n        if (this.position.x > cw || this.position.x < 0) {\n            return true;\n        }\n        if (this.position.y > ch || this.position.y < 0) {\n            return true;\n        }\n        return false;\n    }\n    shouldExplode(maxHeight, minHeight, chance) {\n        if (!this.isRocket) {\n            return false;\n        }\n        if (this.position.y <= maxHeight) {\n            return true;\n        }\n        if (this.position.y >= minHeight) {\n            return false;\n        }\n        return util_1.random(0, 1) <= chance;\n    }\n    update() {\n        this.positions.pop();\n        this.positions.unshift({ x: this.position.x, y: this.position.y });\n        this.velocity.x *= this.resistance;\n        this.velocity.y *= this.resistance;\n        this.velocity.y += this.gravity;\n        this.position.x += this.velocity.x;\n        this.position.y += this.velocity.y;\n        this.size *= this.shrink;\n        this.alpha -= this.fade;\n    }\n    draw(ctx) {\n        const lastPosition = this.positions[this.positions.length - 1];\n        ctx.beginPath();\n        ctx.moveTo(lastPosition.x, lastPosition.y);\n        ctx.lineTo(this.position.x, this.position.y);\n        ctx.lineWidth = this.size;\n        ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;\n        ctx.stroke();\n    }\n}\nexports.default = Particle;\n\n\n//# sourceURL=webpack://Fireworks/./ts/particle.ts?");
 
 /***/ }),
-/* 2 */
+
+/***/ "./ts/things.ts":
+/*!**********************!*\
+  !*** ./ts/things.ts ***!
+  \**********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const particle_1 = __webpack_require__(3);
-const util_1 = __webpack_require__(0);
-class Things extends Set {
-    constructor({ maxRockets, numParticles, cw, ch }) {
-        super();
-        this.rockets = 0;
-        this.maxRockets = maxRockets;
-        this.numParticles = numParticles;
-        this.cw = cw;
-        this.ch = ch;
-    }
-    explode(particle) {
-        this.rockets--;
-        for (let i = 0; i < this.numParticles; i += 1) {
-            this.add(particle.clone());
-        }
-        this.delete(particle);
-    }
-    spawnRocket() {
-        this.rockets++;
-        this.add(new particle_1.default({
-            isRocket: true,
-            position: {
-                x: util_1.random(0, this.cw),
-                y: this.ch
-            }
-        }));
-    }
-    spawnRockets() {
-        if (this.rockets < this.maxRockets) {
-            this.spawnRocket();
-        }
-    }
-}
-exports.default = Things;
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nconst particle_1 = __webpack_require__(/*! ./particle */ \"./ts/particle.ts\");\nconst util_1 = __webpack_require__(/*! ./util */ \"./ts/util.ts\");\nclass Things extends Set {\n    constructor({ maxRockets, numParticles, cw, ch }) {\n        super();\n        this.rockets = 0;\n        this.maxRockets = maxRockets;\n        this.numParticles = numParticles;\n        this.cw = cw;\n        this.ch = ch;\n    }\n    explode(particle) {\n        this.rockets--;\n        for (let i = 0; i < this.numParticles; i += 1) {\n            this.add(particle.clone());\n        }\n        this.delete(particle);\n    }\n    spawnRocket() {\n        this.rockets++;\n        this.add(new particle_1.default({\n            isRocket: true,\n            position: {\n                x: util_1.random(0, this.cw),\n                y: this.ch\n            }\n        }));\n    }\n    spawnRockets() {\n        if (this.rockets < this.maxRockets) {\n            this.spawnRocket();\n        }\n    }\n}\nexports.default = Things;\n\n\n//# sourceURL=webpack://Fireworks/./ts/things.ts?");
 
 /***/ }),
-/* 3 */
+
+/***/ "./ts/util.ts":
+/*!********************!*\
+  !*** ./ts/util.ts ***!
+  \********************/
+/*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-const util_1 = __webpack_require__(0);
-class Particle {
-    constructor({ isRocket = false, hue = util_1.random(1, 360), brightness = util_1.random(50, 60), position }) {
-        this.isRocket = isRocket;
-        this.position = position;
-        this.positions = [
-            this.position,
-            this.position,
-            this.position
-        ];
-        if (this.isRocket) {
-            this.velocity = {
-                x: util_1.random(-3, 3),
-                y: util_1.random(-7, -3)
-            };
-            this.shrink = 0.999;
-            this.resistance = 1;
-        }
-        else {
-            const angle = util_1.random(0, util_1.TAU);
-            const speed = Math.cos(util_1.random(0, util_1.TAU)) * 15;
-            this.velocity = {
-                x: Math.cos(angle) * speed,
-                y: Math.sin(angle) * speed
-            };
-            this.shrink = util_1.random(0, 0.05) + 0.93;
-            this.resistance = 0.92;
-        }
-        this.gravity = 0.01;
-        this.size = 3;
-        this.alpha = 1;
-        this.fade = 0;
-        this.hue = hue;
-        this.brightness = brightness;
-    }
-    clone() {
-        return new Particle({
-            position: {
-                x: this.position.x,
-                y: this.position.y
-            },
-            hue: this.hue,
-            brightness: this.brightness
-        });
-    }
-    shouldRemove(cw, ch) {
-        if (this.alpha <= 0.1 || this.size <= 1) {
-            return true;
-        }
-        if (this.position.x > cw || this.position.x < 0) {
-            return true;
-        }
-        if (this.position.y > ch || this.position.y < 0) {
-            return true;
-        }
-        return false;
-    }
-    shouldExplode(maxHeight, minHeight, chance) {
-        if (!this.isRocket) {
-            return false;
-        }
-        if (this.position.y <= maxHeight) {
-            return true;
-        }
-        if (this.position.y >= minHeight) {
-            return false;
-        }
-        return util_1.random(0, 1) <= chance;
-    }
-    update() {
-        this.positions.pop();
-        this.positions.unshift({ x: this.position.x, y: this.position.y });
-        this.velocity.x *= this.resistance;
-        this.velocity.y *= this.resistance;
-        this.velocity.y += this.gravity;
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-        this.size *= this.shrink;
-        this.alpha -= this.fade;
-    }
-    draw(ctx) {
-        const lastPosition = this.positions[this.positions.length - 1];
-        ctx.beginPath();
-        ctx.moveTo(lastPosition.x, lastPosition.y);
-        ctx.lineTo(this.position.x, this.position.y);
-        ctx.lineWidth = this.size;
-        ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
-        ctx.stroke();
-    }
-}
-exports.default = Particle;
-
+eval("\nObject.defineProperty(exports, \"__esModule\", { value: true });\nfunction random(min, max) {\n    return Math.random() * (max - min) + min;\n}\nexports.random = random;\nexports.TAU = Math.PI * 2;\n\n\n//# sourceURL=webpack://Fireworks/./ts/util.ts?");
 
 /***/ })
-/******/ ])["default"];
+
+/******/ })["default"];
 });
