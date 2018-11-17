@@ -1,10 +1,5 @@
 
-import Particle from './particle'
-import Graphics from './graphics'
 import Things from './things'
-
-import {random} from './util'
-import {Point} from './types'
 
 type Options = {
   maxRockets?: number
@@ -17,14 +12,19 @@ type Options = {
 
 export default class Fireworks {
 
-  maxRockets: number
-  rocketSpawnInterval: number
-  graphics: Graphics
-  cw: number
-  ch: number
-  things: Things
-  interval: number
-  rafInterval: number
+  private maxRockets: number
+  private rocketSpawnInterval: number
+  private cw: number
+  private ch: number
+  private min_h: number
+  private max_h: number
+  private chance: number
+  private things: Things
+  private interval: number
+  private rafInterval: number
+
+  private canvas: HTMLCanvasElement
+  private ctx: CanvasRenderingContext2D
 
   constructor (container: HTMLElement, {
     rocketSpawnInterval = 150,
@@ -34,21 +34,34 @@ export default class Fireworks {
     explosionMaxHeight = 0.9,
     explosionChance = 0.08
   }: Options = {}) {
+
     this.rocketSpawnInterval = rocketSpawnInterval
     this.maxRockets = maxRockets
     this.cw = container.clientWidth
     this.ch = container.clientHeight
-    this.graphics = new Graphics(container)
+    this.max_h = this.ch * (1 - explosionMaxHeight)
+    this.min_h = this.ch * (1 - explosionMinHeight)
+    this.chance = explosionChance
+
+    this.canvas = document.createElement('canvas')
+    this.canvas.width = this.cw
+    this.canvas.height = this.ch
+    this.ctx = this.canvas.getContext('2d')
+    container.appendChild(this.canvas)
+
     this.things = new Things({
       maxRockets: this.maxRockets,
       numParticles,
-      explosionMinHeight,
-      explosionMaxHeight,
-      explosionChance,
       cw: this.cw,
       ch: this.ch
     })
-    container.appendChild(this.graphics.canvas)
+
+  }
+
+  destroy () {
+    this.canvas.parentElement.removeChild(this.canvas)
+    window.clearInterval(this.interval)
+    window.cancelAnimationFrame(this.rafInterval)
   }
 
   start (): () => void {
@@ -69,7 +82,7 @@ export default class Fireworks {
     this.stop()
     window.cancelAnimationFrame(this.rafInterval)
     this.rafInterval = null
-    this.graphics.clear(true)
+    this._clear(true)
   }
 
   fire (): void {
@@ -79,20 +92,23 @@ export default class Fireworks {
     }
   }
 
-  update (): void {
-    this.graphics.clear()
+  private _clear(force: boolean = false): void {
+    this.ctx.globalCompositeOperation = 'destination-out'
+    this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`
+    this.ctx.fillRect(0, 0, this.cw, this.ch)
+    this.ctx.globalCompositeOperation = 'lighter'
+  }
 
-    let x: number = null
+  update (): void {
+    this._clear()
 
     for (const particle of this.things) {
-      this.graphics.drawParticle(particle)
-
+      particle.draw(this.ctx)
       particle.update()
 
-      if (this.things.shouldRemove(particle)) {
+      if (particle.shouldRemove(this.cw, this.ch)) {
         this.things.delete(particle)
-      }
-      else if (this.things.shouldExplode(particle)) {
+      } else if (particle.shouldExplode(this.max_h, this.min_h, this.chance)) {
         this.things.explode(particle)
       }
     }
@@ -100,7 +116,7 @@ export default class Fireworks {
     if (this.interval || this.things.size > 0) {
       this.rafInterval = window.requestAnimationFrame(() => this.update())
     } else {
-      this.graphics.clear(true)
+      this._clear(true)
       this.rafInterval = null
     }
   }
