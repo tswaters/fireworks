@@ -1,4 +1,10 @@
 
+## 2.2.1
+
+* tons of internal refactors
+* adding typings file
+* added new method, `destroy` which removes the canvas and timers.
+
 ## 2.2.0
 
 * adding a kill method that forcibly kills the fireworks
