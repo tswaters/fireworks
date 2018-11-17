@@ -18,7 +18,7 @@ Note - Can't run `npm version` due to dirty worktree - so manually create the ta
 ```sh
 
 #always
-npm run build
+npm run build:prod
 
 # initial
 git --work-tree "dist" checkout --orphan dist
