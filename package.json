@@ -3,6 +3,7 @@
   "version": "2.2.0",
   "description": "fireworks example",
   "main": "./fireworks.min.js",
+  "types": "./fireworks.d.ts",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "webpack",
@@ -11,6 +12,7 @@
     "lint": "tslint ts/**/*.ts"
   },
   "files": [
+    "fireworks.d.ts",
     "fireworks.min.js",
     "fireworks.js",
     "README.MD",
@@ -32,6 +34,7 @@
   "dependencies": {},
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.1",
+    "copy-webpack-plugin": "^4.6.0",
     "rimraf": "^2.6.2",
     "terser-webpack-plugin": "^1.1.0",
     "tslint": "^5.11.0",

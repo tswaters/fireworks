@@ -1,6 +1,7 @@
 
 const path = require('path')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
 
@@ -34,6 +35,13 @@ module.exports = {
         include: /\.min\.js$/
       })
     ]
-  }
+  },
+
+  plugins: [
+    new CopyWebpackPlugin([{
+      from: './fireworks.d.ts',
+      to: './fireworks.d.ts'
+    }])
+  ]
 
 }

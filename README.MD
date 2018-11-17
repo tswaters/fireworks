@@ -39,6 +39,20 @@ fireworks.kill() // forcibly stop fireworks
 fireworks.fire() // fire a single rocket.
 ```
 
+## usage with typscript
+
+```ts
+import * as FireworksCanvas from 'fireworks-canvas'
+const fireworks = new FireworksCanvas(container)
+```
+
+OR
+
+```ts
+import FireworksCanvas = require('fireworks-canvas')
+const fireworks = new FireworksCanvas(container)
+```
+
 ## support
 
 Requires es6 in the browser
