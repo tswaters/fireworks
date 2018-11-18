@@ -1,5 +1,5 @@
 
-## 2.2.2
+## 2.2.3
 
 * fix the typings file (oops!)
 
