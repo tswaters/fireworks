@@ -1,4 +1,12 @@
 
+## 2.2.4
+
+* OOF, forgot to run build on the last 2 releases.
+
+## 2.2.3
+
+* fix the typings file (for reals this time)
+
 ## 2.2.3
 
 * fix the typings file (oops!)
