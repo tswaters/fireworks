@@ -1,7 +1,7 @@
 
 export as namespace Fireworks;
 
-declare class Fireworks2 {
+declare class Fireworks {
   constructor(container: HTMLElement, options?: Fireworks.FireworksOptions);
   destroy(): void;
   start(): () => void;
@@ -22,4 +22,4 @@ declare namespace Fireworks {
   }
 }
 
-export default Fireworks
+export = Fireworks
