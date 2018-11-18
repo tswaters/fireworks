@@ -22,4 +22,4 @@ declare namespace Fireworks {
   }
 }
 
-export default Fireworks
+export = Fireworks
