@@ -1,4 +1,14 @@
 
+## 2.3.0
+
+Update build to use rollup, there are now 3 supported bunldes:
+
+- fireworks.js - cjs module
+- fireworks.mjs - es6 module
+- fireworks.umd.js - browser umd bundle
+
+The browser bundle now has a target of `es3` so it should support older browsers.
+
 ## 2.2.4
 
 * OOF, forgot to run build on the last 2 releases.
