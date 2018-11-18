@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Fireworks example - evergreen</title>
+    <meta charset="utf-8">
+    <script src="../dist/fireworks.min.js"></script>
+    <meta charset="utf-8">
+    <style>
+      #container {
+        margin: 0 auto;
+        border: 1px solid white;
+        width: 100%;
+        height: 500px
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script>
+      var fireworks = new Fireworks(document.getElementById('container'))
+      fireworks.start()
+    </script>
+  </body>
+</html>
