@@ -9,8 +9,9 @@ type ThingOptions = {
   numParticles: number
 }
 
-export default class Things extends Set<Particle> {
+export default class Things {
 
+  private _set: Set<Particle>
   private maxRockets: number
   private numParticles: number
   private cw: number
@@ -23,13 +24,34 @@ export default class Things extends Set<Particle> {
     cw,
     ch
   }: ThingOptions) {
-    super()
+    this._set = new Set()
     this.rockets = 0
     this.maxRockets = maxRockets
     this.numParticles = numParticles
     this.cw = cw
     this.ch = ch
   }
+
+  size () {
+    return this._set.size
+  }
+
+  entries () {
+    return this._set
+  }
+
+  clear () {
+    this._set.clear()
+  }
+
+  delete (thing: Particle) {
+    this._set.delete(thing)
+  }
+
+  add (thing: Particle) {
+    this._set.add(thing)
+  }
+
 
   /**
    * Turn a particle into many particles exploding in different directions.

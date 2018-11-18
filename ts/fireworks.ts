@@ -66,7 +66,7 @@ export default class Fireworks {
 
   start (): () => void {
     if (this.maxRockets > 0) {
-      this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval)
+      this.interval = window.setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval)
       this.rafInterval = window.requestAnimationFrame(() => this.update())
     }
     return () => this.stop()
@@ -102,7 +102,7 @@ export default class Fireworks {
   update (): void {
     this._clear()
 
-    for (const particle of this.things) {
+    for (const particle of this.things.entries()) {
       particle.draw(this.ctx)
       particle.update()
 
@@ -113,7 +113,7 @@ export default class Fireworks {
       }
     }
 
-    if (this.interval || this.things.size > 0) {
+    if (this.interval || this.things.size() > 0) {
       this.rafInterval = window.requestAnimationFrame(() => this.update())
     } else {
       this._clear(true)
