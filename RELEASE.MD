@@ -18,7 +18,7 @@ Note - Can't run `npm version` due to dirty worktree - so manually create the ta
 ```sh
 
 #always
-npm run build:prod
+npm run build
 
 # initial
 git --work-tree "dist" checkout --orphan dist
@@ -41,14 +41,14 @@ git add package.json bower.json README.MD CHANGES.MD LICENSE
 git commit -m "Release 0.0.x"
 git tag v0.0.x
 git push --tags
-git checkout fireworks.js fireworks.min.js # so they show up in filesystem
+git checkout fireworks.js fireworks.min.js fireworks.node.js fireworks.mjs # so they show up in filesystem
 npm pack # make sure it's OK
 npm publish
 
 # go back
 git symbolic-ref HEAD refs/heads/master
 git reset --mixed
-rm fireworks.js fireworks.min.js
+rm fireworks.js fireworks.min.js fireworks.node.js fireworks.mjs
 
 ```
 
