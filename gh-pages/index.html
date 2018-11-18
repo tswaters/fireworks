@@ -3,6 +3,7 @@
 <head>
   <title>Fireworks</title>
   <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
   <script src="./fireworks.js"></script>
   <style>
     body {
@@ -23,8 +24,9 @@
   <button id="stop">Stop!</button>
   <button style="display: none" id="start">Start!</button>
   <script>
-const container = document.getElementById('container')
-const options = {
+
+var container = document.getElementById('container')
+var options = {
   maxRockets: 3,            // max # of rockets to spawn
   rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
   numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
@@ -32,13 +34,13 @@ const options = {
   explosionMaxHeight: 0.9,  // percentage. max height before a particle is exploded
   explosionChance: 0.08     // chance in each tick the rocket will explode
 }
-const fireworks = new Fireworks(container, options)
+var fireworks = new Fireworks(container, options)
 start()
 
-document.getElementById('spawn').addEventListener('click', () => fireworks.fire())
-document.getElementById('kill').addEventListener('click', () => stop(true))
-document.getElementById('stop').addEventListener('click', () => stop(false))
-document.getElementById('start').addEventListener('click', () => start())
+document.getElementById('spawn').addEventListener('click', function () { fireworks.fire() })
+document.getElementById('kill').addEventListener('click', function () { stop(true) })
+document.getElementById('stop').addEventListener('click', function () { stop(false) })
+document.getElementById('start').addEventListener('click', function () { start() })
 
 function stop (force) {
   if (force) {
@@ -56,7 +58,7 @@ function start () {
   document.getElementById('stop').style.display = ''
   document.getElementById('start').style.display = 'none'
   fireworks.start()
-  document.addEventListener('keydown', (e) => e.which === 27 && stop())
+  document.addEventListener('keydown', function (e) { e.which === 27 && stop() })
 }
 
   </script>

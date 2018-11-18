@@ -12,10 +12,14 @@ npm install --save fireworks-canvas
 ## usage
 
 ```js
-// exports a standard umd boiler:
+
+import * as Fireworks from 'fireworks-canvas' // mjs
+
 const Fireworks = require('fireworks-canvas') // cjs
-define(['fireworks-canvas'], (FireWorks) =>  {}) // amd
-const Fireworks = window.Fireforks // browser global
+
+define(['fireworks'], (Fireworks) =>  {}) // amd
+
+const Fireworks = window.Fireworks // browser global
 
 // needs at least a container element, you can provide options
 // (options are optional, defaults defined below)
@@ -55,14 +59,16 @@ const fireworks = new FireworksCanvas(container)
 
 ## support
 
-Requires es6 in the browser
+Should work in most browsers.
+
+Note that you'll need a polyfill for `Set` to support iexplore 11.
 
 ## development
 
 ```sh
 npm i
 npm run build:dev
-# edit ./gh-pages/index.html, change reference to '../dist/fireworks.js`
-# open ./gh-pages/index.html in your favourite evergreen browser
+# edit ./gh-pages/index.html, change reference to '../dist/fireworks.umd.js`
+# open ./gh-pages/index.html in your favourite browser
 ```
 
