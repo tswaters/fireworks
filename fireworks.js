@@ -18,20 +18,6 @@
     See the Apache Version 2.0 License for specific language governing permissions
     and limitations under the License.
     ***************************************************************************** */
-    /* global Reflect, Promise */
-
-    var extendStatics = function(d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-
-    function __extends(d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    }
 
     function __values(o) {
         var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
@@ -141,18 +127,31 @@
         return Particle;
     }());
 
-    var Things = (function (_super) {
-        __extends(Things, _super);
+    var Things = (function () {
         function Things(_a) {
             var maxRockets = _a.maxRockets, numParticles = _a.numParticles, cw = _a.cw, ch = _a.ch;
-            var _this = _super.call(this) || this;
-            _this.rockets = 0;
-            _this.maxRockets = maxRockets;
-            _this.numParticles = numParticles;
-            _this.cw = cw;
-            _this.ch = ch;
-            return _this;
+            this._set = new Set();
+            this.rockets = 0;
+            this.maxRockets = maxRockets;
+            this.numParticles = numParticles;
+            this.cw = cw;
+            this.ch = ch;
         }
+        Things.prototype.size = function () {
+            return this._set.size;
+        };
+        Things.prototype.entries = function () {
+            return this._set;
+        };
+        Things.prototype.clear = function () {
+            this._set.clear();
+        };
+        Things.prototype["delete"] = function (thing) {
+            this._set["delete"](thing);
+        };
+        Things.prototype.add = function (thing) {
+            this._set.add(thing);
+        };
         Things.prototype.explode = function (particle) {
             this.rockets--;
             for (var i = 0; i < this.numParticles; i += 1) {
@@ -176,7 +175,7 @@
             }
         };
         return Things;
-    }(Set));
+    }());
 
     var Fireworks = (function () {
         function Fireworks(container, _a) {
@@ -208,7 +207,7 @@
         Fireworks.prototype.start = function () {
             var _this = this;
             if (this.maxRockets > 0) {
-                this.interval = setInterval(function () { return _this.things.spawnRockets(); }, this.rocketSpawnInterval);
+                this.interval = window.setInterval(function () { return _this.things.spawnRockets(); }, this.rocketSpawnInterval);
                 this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
             }
             return function () { return _this.stop(); };
@@ -243,7 +242,7 @@
             var e_1, _a;
             this._clear();
             try {
-                for (var _b = __values(this.things), _c = _b.next(); !_c.done; _c = _b.next()) {
+                for (var _b = __values(this.things.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
                     var particle = _c.value;
                     particle.draw(this.ctx);
                     particle.update();
@@ -262,7 +261,7 @@
                 }
                 finally { if (e_1) throw e_1.error; }
             }
-            if (this.interval || this.things.size > 0) {
+            if (this.interval || this.things.size() > 0) {
                 this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
             }
             else {

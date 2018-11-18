@@ -95,14 +95,29 @@ class Particle {
     }
 }
 
-class Things extends Set {
+class Things {
     constructor({ maxRockets, numParticles, cw, ch }) {
-        super();
+        this._set = new Set();
         this.rockets = 0;
         this.maxRockets = maxRockets;
         this.numParticles = numParticles;
         this.cw = cw;
         this.ch = ch;
+    }
+    size() {
+        return this._set.size;
+    }
+    entries() {
+        return this._set;
+    }
+    clear() {
+        this._set.clear();
+    }
+    delete(thing) {
+        this._set.delete(thing);
+    }
+    add(thing) {
+        this._set.add(thing);
     }
     explode(particle) {
         this.rockets--;
@@ -156,7 +171,7 @@ class Fireworks {
     }
     start() {
         if (this.maxRockets > 0) {
-            this.interval = setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
+            this.interval = window.setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
         return () => this.stop();
@@ -186,7 +201,7 @@ class Fireworks {
     }
     update() {
         this._clear();
-        for (const particle of this.things) {
+        for (const particle of this.things.entries()) {
             particle.draw(this.ctx);
             particle.update();
             if (particle.shouldRemove(this.cw, this.ch)) {
@@ -196,7 +211,7 @@ class Fireworks {
                 this.things.explode(particle);
             }
         }
-        if (this.interval || this.things.size > 0) {
+        if (this.interval || this.things.size() > 0) {
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
         else {

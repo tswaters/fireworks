@@ -17,7 +17,7 @@ import * as Fireworks from 'fireworks-canvas' // mjs
 
 const Fireworks = require('fireworks-canvas') // cjs
 
-define(['fireworks'], (Fireworks) =>  {}) // amd
+requirejs(['Fireworks'], (Fireworks) =>  {}) // amd
 
 const Fireworks = window.Fireworks // browser global
 
