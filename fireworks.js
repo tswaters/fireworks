@@ -1,8 +1,8 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define('Fireworks', factory) :
-    (global.Fireworks = factory());
-}(this, (function () { 'use strict';
+    (global = global || self, global.Fireworks = factory());
+}(this, function () { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -238,8 +238,8 @@
             this.ctx.globalCompositeOperation = 'lighter';
         };
         Fireworks.prototype.update = function () {
-            var _this = this;
             var e_1, _a;
+            var _this = this;
             this._clear();
             try {
                 for (var _b = __values(this.things.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -274,4 +274,4 @@
 
     return Fireworks;
 
-})));
+}));
