@@ -17,7 +17,6 @@ const config = (browser, minify) => {
   if (browser) {
     plugins.push(
       resolve({
-        module: true,
         extensions: ['.js', '.mjs']
       })
     )
