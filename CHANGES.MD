@@ -1,4 +1,8 @@
 
+## 2.3.2
+
+Bump various devDepedencies
+
 ## 2.3.1
 
 Fix busted build with evergreen browsers (oops!).
