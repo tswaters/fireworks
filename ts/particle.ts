@@ -15,7 +15,7 @@ type ParticleOptions = {
 
 export default class Particle {
 
-  private isRocket: boolean
+  public isRocket: boolean
   private positions: Point[]
   private position: Point
   private velocity: Point

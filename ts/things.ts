@@ -16,7 +16,7 @@ export default class Things {
   private numParticles: number
   public cw: number
   public ch: number
-  private rockets: number
+  public rockets: number
 
   constructor ({
     maxRockets,
@@ -46,6 +46,7 @@ export default class Things {
 
   delete (thing: Particle) {
     this._set.delete(thing)
+    if (thing.isRocket) this.rockets--
   }
 
   add (thing: Particle) {
@@ -59,7 +60,6 @@ export default class Things {
    * @param {Particle} particle the rocket to start from.
    */
   explode (particle: Particle): void {
-    this.rockets--
     for (let i = 0; i < this.numParticles; i += 1) {
       this.add(particle.clone())
     }
