@@ -7,11 +7,7 @@ class Particle {
     constructor({ isRocket = false, hue = random(1, 360), brightness = random(50, 60), position }) {
         this.isRocket = isRocket;
         this.position = position;
-        this.positions = [
-            this.position,
-            this.position,
-            this.position
-        ];
+        this.positions = [this.position, this.position, this.position];
         if (this.isRocket) {
             this.velocity = {
                 x: random(-3, 3),
@@ -113,12 +109,13 @@ class Things {
     }
     delete(thing) {
         this._set.delete(thing);
+        if (thing.isRocket)
+            this.rockets--;
     }
     add(thing) {
         this._set.add(thing);
     }
     explode(particle) {
-        this.rockets--;
         for (let i = 0; i < this.numParticles; i += 1) {
             this.add(particle.clone());
         }
@@ -142,13 +139,14 @@ class Things {
 }
 
 class Fireworks {
-    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08 } = {}) {
+    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08, width = container.clientWidth, height = container.clientHeight } = {}) {
+        this.container = container;
         this.rocketSpawnInterval = rocketSpawnInterval;
         this.maxRockets = maxRockets;
-        this.cw = container.clientWidth;
-        this.ch = container.clientHeight;
-        this.max_h = this.ch * (1 - explosionMaxHeight);
-        this.min_h = this.ch * (1 - explosionMinHeight);
+        this.cw = width;
+        this.ch = height;
+        this.maxH = this.ch * (1 - explosionMaxHeight);
+        this.minH = this.ch * (1 - explosionMinHeight);
         this.chance = explosionChance;
         this.canvas = document.createElement('canvas');
         this.canvas.width = this.cw;
@@ -173,6 +171,22 @@ class Fireworks {
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
         return () => this.stop();
+    }
+    updateDimensions() {
+        this.canvas.width = this.cw;
+        this.canvas.height = this.ch;
+        this.things.cw = this.cw;
+        this.things.ch = this.ch;
+    }
+    setSize(width, height) {
+        this.cw = width;
+        this.ch = height;
+        this.updateDimensions();
+    }
+    resetSize() {
+        this.cw = this.container.clientWidth;
+        this.ch = this.container.clientHeight;
+        this.updateDimensions();
     }
     stop() {
         window.clearInterval(this.interval);
@@ -205,7 +219,7 @@ class Fireworks {
             if (particle.shouldRemove(this.cw, this.ch)) {
                 this.things.delete(particle);
             }
-            else if (particle.shouldExplode(this.max_h, this.min_h, this.chance)) {
+            else if (particle.shouldExplode(this.maxH, this.minH, this.chance)) {
                 this.things.explode(particle);
             }
         }
