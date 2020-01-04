@@ -2,12 +2,7 @@
   "compilerOptions": {
     "removeComments": true,
     "sourceMap": false,
-    "lib": [
-      "dom",
-      "es6",
-      "dom.iterable",
-      "scripthost"
-    ],
+    "lib": ["dom", "es6", "dom.iterable", "scripthost"],
     "newLine": "LF",
     "declaration": false,
     "noImplicitUseStrict": false,
@@ -17,7 +12,5 @@
     "outDir": "./dist/fireworks.js",
     "downlevelIteration": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

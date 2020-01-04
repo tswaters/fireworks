@@ -2,9 +2,7 @@
   "name": "fireworks-canvas",
   "description": "fireworks with canvas",
   "main": "./fireworks.js",
-  "authors": [
-    "Tyler Waters <tyler.waters@gmail.com>"
-  ],
+  "authors": ["Tyler Waters <tyler.waters@gmail.com>"],
   "license": "WTFPL",
   "homepage": "https://tswaters.github.io/fireworks/",
   "repository": {

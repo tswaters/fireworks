@@ -1,4 +1,3 @@
-
 # Releases
 
 The `dist` directory is not version controlled in master branch... use `--work-tree` flag in git to trick it into adding the `dist` directory at the root of a given branch (dist or gh-pages). Tags are made against `dist` branch so bower can pick them up.
@@ -7,11 +6,11 @@ The `dist` directory is not version controlled in master branch... use `--work-t
 
 This is the directory that is published to npm and by way of the tags, bower. In addition to the `dist` directory, the following files are included:
 
-* CHANGES.MD
-* LICENSE
-* README.MD
-* package.json
-* bower.json
+- CHANGES.MD
+- LICENSE
+- README.MD
+- package.json
+- bower.json
 
 Note - Can't run `npm version` due to dirty worktree - so manually create the tags, increment package.json and package-lock.json... with that done, `npm publish` as normal.
 
@@ -54,7 +53,7 @@ rm fireworks.js fireworks.min.js fireworks.node.js fireworks.mjs
 
 ## gh-pages branch
 
-This is for the live example.  Similar to `dist` branch, but without package/bower/md files and with `gh-pages/index.html`.
+This is for the live example. Similar to `dist` branch, but without package/bower/md files and with `gh-pages/index.html`.
 
 ```sh
 

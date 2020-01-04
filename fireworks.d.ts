@@ -1,16 +1,13 @@
-
-export as namespace Fireworks;
-
 declare class Fireworks {
-  constructor(container: HTMLElement, options?: Fireworks.FireworksOptions);
-  destroy(): void;
-  start(): () => void;
-  stop(): void;
-  kill(): void;
-  fire(): void;
-  update(): void;
-  setSize(width: number, height: number): void;
-  resetSize(): void;
+  constructor(container: HTMLElement, options?: Fireworks.FireworksOptions)
+  destroy(): void
+  start(): () => void
+  stop(): void
+  kill(): void
+  fire(): void
+  update(): void
+  setSize(width: number, height: number): void
+  resetSize(): void
 }
 
 declare namespace Fireworks {
@@ -25,3 +22,5 @@ declare namespace Fireworks {
 }
 
 export = Fireworks
+
+export as namespace Fireworks

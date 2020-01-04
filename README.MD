@@ -12,12 +12,11 @@ npm install --save fireworks-canvas
 ## usage
 
 ```js
-
 import * as Fireworks from 'fireworks-canvas' // mjs
 
 const Fireworks = require('fireworks-canvas') // cjs
 
-requirejs(['Fireworks'], (Fireworks) =>  {}) // amd
+requirejs(['Fireworks'], Fireworks => {}) // amd
 
 const Fireworks = window.Fireworks // browser global
 
@@ -25,13 +24,13 @@ const Fireworks = window.Fireworks // browser global
 // (options are optional, defaults defined below)
 const container = document.getElementById('container')
 const options = {
-  maxRockets: 3,            // max # of rockets to spawn
+  maxRockets: 3, // max # of rockets to spawn
   rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
-  numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
-  explosionMinHeight: 0.2,  // percentage. min height at which rockets can explode
-  explosionMaxHeight: 0.9,  // percentage. max height before a particle is exploded
-  explosionChance: 0.08,    // chance in each tick the rocket will explode
-  width: container.clientWidth,  // override the width, defaults to container width
+  numParticles: 100, // number of particles to spawn when rocket explodes (+0-10)
+  explosionMinHeight: 0.2, // percentage. min height at which rockets can explode
+  explosionMaxHeight: 0.9, // percentage. max height before a particle is exploded
+  explosionChance: 0.08, // chance in each tick the rocket will explode
+  width: container.clientWidth, // override the width, defaults to container width
   height: container.clientHeight // override the height, defaults to container height
 }
 
@@ -75,4 +74,3 @@ npm run build:dev
 # edit ./gh-pages/index.html, change reference to '../dist/fireworks.umd.js`
 # open ./gh-pages/index.html in your favourite browser
 ```
-

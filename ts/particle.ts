@@ -1,20 +1,18 @@
-
-import {random, TAU} from './util'
+import { random, TAU } from './util'
 
 type Point = {
-  x: number,
+  x: number
   y: number
 }
 
 type ParticleOptions = {
   position: Point
-  isRocket?: boolean,
-  hue?: number,
-  brightness?: number,
+  isRocket?: boolean
+  hue?: number
+  brightness?: number
 }
 
 export default class Particle {
-
   public isRocket: boolean
   private positions: Point[]
   private position: Point
@@ -28,20 +26,15 @@ export default class Particle {
   private hue: number
   private brightness: number
 
-  constructor ({
+  constructor({
     isRocket = false,
     hue = random(1, 360),
     brightness = random(50, 60),
     position
   }: ParticleOptions) {
-
     this.isRocket = isRocket
     this.position = position
-    this.positions = [
-      this.position,
-      this.position,
-      this.position
-    ]
+    this.positions = [this.position, this.position, this.position]
 
     if (this.isRocket) {
       this.velocity = {
@@ -73,7 +66,7 @@ export default class Particle {
    * Clones a particle, same hue/brightness/position
    * @returns {Particle} new particle
    */
-  clone (): Particle {
+  clone(): Particle {
     return new Particle({
       position: {
         x: this.position.x,
@@ -89,7 +82,7 @@ export default class Particle {
    * @param particle particle to check
    * @returns {boolean} whether or not the particle should be removed.
    */
-  shouldRemove (cw: number, ch: number): boolean {
+  shouldRemove(cw: number, ch: number): boolean {
     if (this.alpha <= 0.1 || this.size <= 1) {
       return true
     }
@@ -110,9 +103,10 @@ export default class Particle {
    * @param {Particle} particle rocket to check
    * @returns {boolean} whether or not the rocket shoudl explode
    */
-  shouldExplode (maxHeight: number, minHeight: number, chance: number): boolean {
-
-    if (!this.isRocket) { return false }
+  shouldExplode(maxHeight: number, minHeight: number, chance: number): boolean {
+    if (!this.isRocket) {
+      return false
+    }
 
     // make sure things explode once they hit explosionMaxHeight (90% default) of height
     if (this.position.y <= maxHeight) {
@@ -131,9 +125,9 @@ export default class Particle {
    * Update the position of the particle.
    * For rockets, has a potential to explode.
    */
-  update (): void {
+  update(): void {
     this.positions.pop()
-    this.positions.unshift({x: this.position.x, y: this.position.y})
+    this.positions.unshift({ x: this.position.x, y: this.position.y })
     this.velocity.x *= this.resistance
     this.velocity.y *= this.resistance
     this.velocity.y += this.gravity
@@ -147,7 +141,7 @@ export default class Particle {
    * Renders a particle. Returns whether or not it should exist.
    * @param {CanvasRenderingContext2D} ctx canvas context
    */
-  draw (ctx: CanvasRenderingContext2D): void {
+  draw(ctx: CanvasRenderingContext2D): void {
     const lastPosition = this.positions[this.positions.length - 1]
     ctx.beginPath()
     ctx.moveTo(lastPosition.x, lastPosition.y)
@@ -156,5 +150,4 @@ export default class Particle {
     ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`
     ctx.stroke()
   }
-
 }
