@@ -1,3 +1,8 @@
+## 2.4.0
+
+- add two options, `resetSize()` and `setSize(number, number)` to control the canvas element's size
+- fixed a bug where rockets were no longer tracked after leaving the screen
+- update devDependencies
 
 ## 2.3.2
 

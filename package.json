@@ -1,6 +1,6 @@
 {
   "name": "fireworks-canvas",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "fireworks example",
   "browser": "./fireworks.min.js",
   "main": "./fireworks.node.js",
