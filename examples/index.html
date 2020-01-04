@@ -1,11 +1,9 @@
 <!doctype html>
 <html>
   <head>
-    <title>Fireworks example - requirejs</title>
+    <title>Fireworks</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="example.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.js"></script>
     <script src="../dist/fireworks.min.js"></script>
     <script src="./example.js"></script>
   </head>
@@ -16,9 +14,7 @@
     <button id="stop">Stop!</button>
     <button style="display: none" id="start">Start!</button>
     <script>
-    requirejs(['Fireworks'], function (Fireworks) {
       example(Fireworks, document.getElementById('container'))
-    })
     </script>
   </body>
 </html>

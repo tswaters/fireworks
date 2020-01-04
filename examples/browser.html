@@ -3,22 +3,18 @@
   <head>
     <title>Fireworks example - evergreen</title>
     <meta charset="utf-8">
+    <link rel="stylesheet" href="example.css">
     <script src="../dist/fireworks.min.js"></script>
-    <meta charset="utf-8">
-    <style>
-      #container {
-        margin: 0 auto;
-        border: 1px solid white;
-        width: 100%;
-        height: 500px
-      }
-    </style>
+    <script src="./example.js"></script>
   </head>
   <body>
     <div id="container"></div>
+    <button id="spawn">Fire!</button>
+    <button id="kill">Kill!</button>
+    <button id="stop">Stop!</button>
+    <button style="display: none" id="start">Start!</button>
     <script>
-      var fireworks = new Fireworks(document.getElementById('container'))
-      fireworks.start()
+      example(Fireworks, document.getElementById('container'))
     </script>
   </body>
 </html>
