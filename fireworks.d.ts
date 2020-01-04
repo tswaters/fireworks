@@ -9,6 +9,8 @@ declare class Fireworks {
   kill(): void;
   fire(): void;
   update(): void;
+  setSize(width: number, height: number): void;
+  resetSize(): void;
 }
 
 declare namespace Fireworks {

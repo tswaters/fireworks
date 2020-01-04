@@ -7,11 +7,14 @@ type Options = {
   explosionMinHeight?: number
   explosionMaxHeight?: number
   explosionChance?: number
-  rocketSpawnInterval?: number
+  rocketSpawnInterval?: number,
+  width?: number,
+  height?: number
 }
 
 export default class Fireworks {
 
+  private container: HTMLElement
   private maxRockets: number
   private rocketSpawnInterval: number
   private cw: number
@@ -32,13 +35,16 @@ export default class Fireworks {
     numParticles = 100,
     explosionMinHeight = 0.2,
     explosionMaxHeight = 0.9,
-    explosionChance = 0.08
+    explosionChance = 0.08,
+    width = container.clientWidth,
+    height = container.clientHeight
   }: Options = {}) {
 
+    this.container = container
     this.rocketSpawnInterval = rocketSpawnInterval
     this.maxRockets = maxRockets
-    this.cw = container.clientWidth
-    this.ch = container.clientHeight
+    this.cw = width
+    this.ch = height
     this.max_h = this.ch * (1 - explosionMaxHeight)
     this.min_h = this.ch * (1 - explosionMinHeight)
     this.chance = explosionChance
@@ -70,6 +76,25 @@ export default class Fireworks {
       this.rafInterval = window.requestAnimationFrame(() => this.update())
     }
     return () => this.stop()
+  }
+
+  private updateDimensions(): void {
+    this.canvas.width = this.cw
+    this.canvas.height = this.ch
+    this.things.cw = this.cw
+    this.things.ch = this.ch
+  }
+
+  setSize(width: number, height: number): void {
+    this.cw = width
+    this.ch = height
+    this.updateDimensions()
+  }
+
+  resetSize(): void {
+    this.cw = this.container.clientWidth
+    this.ch = this.container.clientHeight
+    this.updateDimensions()
   }
 
   stop (): void {

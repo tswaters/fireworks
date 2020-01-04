@@ -16,6 +16,7 @@ function example(Fireworks, container) {
   document.getElementById('kill').addEventListener('click', () => stop(true))
   document.getElementById('stop').addEventListener('click', () => stop(false))
   document.getElementById('start').addEventListener('click', () => start())
+  window.addEventListener('resize', () => fireworks.resetSize())
 
   function stop (force) {
     document.getElementById('kill').style.display = 'none'

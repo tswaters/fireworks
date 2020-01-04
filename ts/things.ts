@@ -14,8 +14,8 @@ export default class Things {
   private _set: Set<Particle>
   private maxRockets: number
   private numParticles: number
-  private cw: number
-  private ch: number
+  public cw: number
+  public ch: number
   private rockets: number
 
   constructor ({

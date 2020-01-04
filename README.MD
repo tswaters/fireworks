@@ -30,7 +30,9 @@ const options = {
   numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
   explosionMinHeight: 0.2,  // percentage. min height at which rockets can explode
   explosionMaxHeight: 0.9,  // percentage. max height before a particle is exploded
-  explosionChance: 0.08     // chance in each tick the rocket will explode
+  explosionChance: 0.08,    // chance in each tick the rocket will explode
+  width: container.clientWidth,  // override the width, defaults to container width
+  height: container.clientHeight // override the height, defaults to container height
 }
 
 // instantiate the class and call start
@@ -41,6 +43,8 @@ stop() // stop rockets from spawning
 fireworks.stop() // also stops fireworks.
 fireworks.kill() // forcibly stop fireworks
 fireworks.fire() // fire a single rocket.
+fireworks.resetSize() // resets the size to the containers dimensions
+fireworks.setSize(100, 100) // sets the size to the specified dimensions
 ```
 
 ## usage with typscript
