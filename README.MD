@@ -70,7 +70,6 @@ Note that you'll need a polyfill for `Set` to support iexplore 11.
 
 ```sh
 npm i
-npm run build:dev
-# edit ./gh-pages/index.html, change reference to '../dist/fireworks.umd.js`
-# open ./gh-pages/index.html in your favourite browser
+npm start
+# open localhost:8001 in your favourite browser
 ```
