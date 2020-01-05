@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define('Fireworks', factory) :
-    (global.Fireworks = factory());
+    (global = global || self, global.Fireworks = factory());
 }(this, (function () { 'use strict';
 
     /*! *****************************************************************************
@@ -40,11 +40,7 @@
             var _b = _a.isRocket, isRocket = _b === void 0 ? false : _b, _c = _a.hue, hue = _c === void 0 ? random(1, 360) : _c, _d = _a.brightness, brightness = _d === void 0 ? random(50, 60) : _d, position = _a.position;
             this.isRocket = isRocket;
             this.position = position;
-            this.positions = [
-                this.position,
-                this.position,
-                this.position
-            ];
+            this.positions = [this.position, this.position, this.position];
             if (this.isRocket) {
                 this.velocity = {
                     x: random(-3, 3),
@@ -148,12 +144,13 @@
         };
         Things.prototype["delete"] = function (thing) {
             this._set["delete"](thing);
+            if (thing.isRocket)
+                this.rockets--;
         };
         Things.prototype.add = function (thing) {
             this._set.add(thing);
         };
         Things.prototype.explode = function (particle) {
-            this.rockets--;
             for (var i = 0; i < this.numParticles; i += 1) {
                 this.add(particle.clone());
             }
@@ -179,13 +176,14 @@
 
     var Fireworks = (function () {
         function Fireworks(container, _a) {
-            var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h;
+            var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h, _j = _b.width, width = _j === void 0 ? container.clientWidth : _j, _k = _b.height, height = _k === void 0 ? container.clientHeight : _k;
+            this.container = container;
             this.rocketSpawnInterval = rocketSpawnInterval;
             this.maxRockets = maxRockets;
-            this.cw = container.clientWidth;
-            this.ch = container.clientHeight;
-            this.max_h = this.ch * (1 - explosionMaxHeight);
-            this.min_h = this.ch * (1 - explosionMinHeight);
+            this.cw = width;
+            this.ch = height;
+            this.maxH = this.ch * (1 - explosionMaxHeight);
+            this.minH = this.ch * (1 - explosionMinHeight);
             this.chance = explosionChance;
             this.canvas = document.createElement('canvas');
             this.canvas.width = this.cw;
@@ -211,6 +209,22 @@
                 this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
             }
             return function () { return _this.stop(); };
+        };
+        Fireworks.prototype.updateDimensions = function () {
+            this.canvas.width = this.cw;
+            this.canvas.height = this.ch;
+            this.things.cw = this.cw;
+            this.things.ch = this.ch;
+        };
+        Fireworks.prototype.setSize = function (width, height) {
+            this.cw = width;
+            this.ch = height;
+            this.updateDimensions();
+        };
+        Fireworks.prototype.resetSize = function () {
+            this.cw = this.container.clientWidth;
+            this.ch = this.container.clientHeight;
+            this.updateDimensions();
         };
         Fireworks.prototype.stop = function () {
             window.clearInterval(this.interval);
@@ -238,8 +252,8 @@
             this.ctx.globalCompositeOperation = 'lighter';
         };
         Fireworks.prototype.update = function () {
-            var _this = this;
             var e_1, _a;
+            var _this = this;
             this._clear();
             try {
                 for (var _b = __values(this.things.entries()), _c = _b.next(); !_c.done; _c = _b.next()) {
@@ -249,7 +263,7 @@
                     if (particle.shouldRemove(this.cw, this.ch)) {
                         this.things["delete"](particle);
                     }
-                    else if (particle.shouldExplode(this.max_h, this.min_h, this.chance)) {
+                    else if (particle.shouldExplode(this.maxH, this.minH, this.chance)) {
                         this.things.explode(particle);
                     }
                 }

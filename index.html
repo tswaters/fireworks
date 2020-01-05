@@ -1,66 +1,19 @@
-<!doctype html>
-<html>
-<head>
-  <title>Fireworks</title>
-  <meta charset="utf-8">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.0.0/polyfill.min.js"></script>
-  <script src="./fireworks.js"></script>
-  <style>
-    body {
-      background-color: black;
-    }
-    #container {
-      margin: 0 auto;
-      border: 1px solid white;
-      width: 100%;
-      height: 500px
-    }
-  </style>
+<!DOCTYPE html><html><head>
+    <title>Fireworks</title>
+    <meta charset="utf-8">
+  <script type="text/javascript" src="fireworks.js"></script>
+<link rel="stylesheet" href="example.css">
+<script type="text/javascript" src="example.js"></script>
 </head>
-<body>
-  <div id="container"></div>
-  <button id="spawn">Fire!</button>
-  <button id="kill">Kill!</button>
-  <button id="stop">Stop!</button>
-  <button style="display: none" id="start">Start!</button>
-  <script>
+  <body>
+    <div id="container"></div>
+    <button id="spawn">Fire!</button>
+    <button id="kill">Kill!</button>
+    <button id="stop">Stop!</button>
+    <button style="display: none" id="start">Start!</button>
+    <script>
+      example(Fireworks, document.getElementById('container'))
+    </script>
+  
 
-var container = document.getElementById('container')
-var options = {
-  maxRockets: 3,            // max # of rockets to spawn
-  rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
-  numParticles: 100,        // number of particles to spawn when rocket explodes (+0-10)
-  explosionMinHeight: 0.2,  // percentage. min height at which rockets can explode
-  explosionMaxHeight: 0.9,  // percentage. max height before a particle is exploded
-  explosionChance: 0.08     // chance in each tick the rocket will explode
-}
-var fireworks = new Fireworks(container, options)
-start()
-
-document.getElementById('spawn').addEventListener('click', function () { fireworks.fire() })
-document.getElementById('kill').addEventListener('click', function () { stop(true) })
-document.getElementById('stop').addEventListener('click', function () { stop(false) })
-document.getElementById('start').addEventListener('click', function () { start() })
-
-function stop (force) {
-  if (force) {
-    fireworks.kill()
-  } else {
-    fireworks.stop()
-  }
-  document.getElementById('kill').style.display = 'none'
-  document.getElementById('stop').style.display = 'none'
-  document.getElementById('start').style.display = ''
-}
-
-function start () {
-  document.getElementById('kill').style.display = ''
-  document.getElementById('stop').style.display = ''
-  document.getElementById('start').style.display = 'none'
-  fireworks.start()
-  document.addEventListener('keydown', function (e) { e.which === 27 && stop() })
-}
-
-  </script>
-</body>
-</html>
+</body></html>
