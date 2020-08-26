@@ -26,6 +26,7 @@ export default class Fireworks {
 
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
+  private pixelRatio: number
 
   constructor(
     container: HTMLElement,
@@ -49,9 +50,8 @@ export default class Fireworks {
     this.minH = this.ch * (1 - explosionMinHeight)
     this.chance = explosionChance
 
+    this.pixelRatio = window.devicePixelRatio || 1
     this.canvas = document.createElement('canvas')
-    this.canvas.width = this.cw
-    this.canvas.height = this.ch
     this.ctx = this.canvas.getContext('2d')
     container.appendChild(this.canvas)
 
@@ -61,6 +61,7 @@ export default class Fireworks {
       cw: this.cw,
       ch: this.ch
     })
+    this.updateDimensions()
   }
 
   destroy(): void {
@@ -81,8 +82,11 @@ export default class Fireworks {
   }
 
   private updateDimensions(): void {
-    this.canvas.width = this.cw
-    this.canvas.height = this.ch
+    this.canvas.width = this.cw * this.pixelRatio
+    this.canvas.height = this.ch * this.pixelRatio
+    this.canvas.style.width = this.cw + 'px'
+    this.canvas.style.height = this.ch + 'px'
+    this.ctx.scale(this.pixelRatio, this.pixelRatio);
     this.things.cw = this.cw
     this.things.ch = this.ch
   }

@@ -147,6 +147,7 @@ export default class Particle {
     ctx.moveTo(lastPosition.x, lastPosition.y)
     ctx.lineTo(this.position.x, this.position.y)
     ctx.lineWidth = this.size
+    ctx.lineCap = 'round'
     ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`
     ctx.stroke()
   }
