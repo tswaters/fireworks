@@ -44,6 +44,7 @@ fireworks.kill() // forcibly stop fireworks
 fireworks.fire() // fire a single rocket.
 fireworks.resetSize() // resets the size to the containers dimensions
 fireworks.setSize(100, 100) // sets the size to the specified dimensions
+fireworks.onFinish(() => container.remove()) // callback when the last firework disappears
 ```
 
 ## usage with typscript
