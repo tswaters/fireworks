@@ -24,6 +24,8 @@ export default class Fireworks {
   private interval: number
   private rafInterval: number
 
+  private finishCallbacks: Array<() => void> = []
+
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
 
@@ -108,8 +110,7 @@ export default class Fireworks {
     this.things.clear()
     this.stop()
     window.cancelAnimationFrame(this.rafInterval)
-    this.rafInterval = null
-    this._clear(true)
+    this._finish()
   }
 
   fire(): void {
@@ -119,11 +120,21 @@ export default class Fireworks {
     }
   }
 
+  onFinish(cb: () => void): void {
+    this.finishCallbacks.push(cb)
+  }
+
   private _clear(force = false): void {
     this.ctx.globalCompositeOperation = 'destination-out'
     this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`
     this.ctx.fillRect(0, 0, this.cw, this.ch)
     this.ctx.globalCompositeOperation = 'lighter'
+  }
+
+  private _finish(): void {
+    this._clear(true)
+    this.rafInterval = null
+    this.finishCallbacks.forEach((cb) => cb())
   }
 
   update(): void {
@@ -143,8 +154,7 @@ export default class Fireworks {
     if (this.interval || this.things.size() > 0) {
       this.rafInterval = window.requestAnimationFrame(() => this.update())
     } else {
-      this._clear(true)
-      this.rafInterval = null
+      this._finish()
     }
   }
 }
