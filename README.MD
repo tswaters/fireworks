@@ -44,6 +44,7 @@ fireworks.kill() // forcibly stop fireworks
 fireworks.fire() // fire a single rocket.
 fireworks.resetSize() // resets the size to the containers dimensions
 fireworks.setSize(100, 100) // sets the size to the specified dimensions
+fireworks.onFinish(() => container.remove()) // callback when the last firework disappears
 ```
 
 ## usage with typscript
@@ -70,7 +71,6 @@ Note that you'll need a polyfill for `Set` to support iexplore 11.
 
 ```sh
 npm i
-npm run build:dev
-# edit ./gh-pages/index.html, change reference to '../dist/fireworks.umd.js`
-# open ./gh-pages/index.html in your favourite browser
+npm start
+# open localhost:8001 in your favourite browser
 ```

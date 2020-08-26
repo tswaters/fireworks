@@ -86,6 +86,7 @@ class Particle {
         ctx.moveTo(lastPosition.x, lastPosition.y);
         ctx.lineTo(this.position.x, this.position.y);
         ctx.lineWidth = this.size;
+        ctx.lineCap = 'round';
         ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`;
         ctx.stroke();
     }
@@ -142,6 +143,7 @@ class Things {
 
 class Fireworks {
     constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08, width = container.clientWidth, height = container.clientHeight } = {}) {
+        this.finishCallbacks = [];
         this.container = container;
         this.rocketSpawnInterval = rocketSpawnInterval;
         this.maxRockets = maxRockets;
@@ -150,9 +152,8 @@ class Fireworks {
         this.maxH = this.ch * (1 - explosionMaxHeight);
         this.minH = this.ch * (1 - explosionMinHeight);
         this.chance = explosionChance;
+        this.pixelRatio = window.devicePixelRatio || 1;
         this.canvas = document.createElement('canvas');
-        this.canvas.width = this.cw;
-        this.canvas.height = this.ch;
         this.ctx = this.canvas.getContext('2d');
         container.appendChild(this.canvas);
         this.things = new Things({
@@ -161,6 +162,7 @@ class Fireworks {
             cw: this.cw,
             ch: this.ch
         });
+        this.updateDimensions();
     }
     destroy() {
         this.canvas.parentElement.removeChild(this.canvas);
@@ -175,8 +177,11 @@ class Fireworks {
         return () => this.stop();
     }
     updateDimensions() {
-        this.canvas.width = this.cw;
-        this.canvas.height = this.ch;
+        this.canvas.width = this.cw * this.pixelRatio;
+        this.canvas.height = this.ch * this.pixelRatio;
+        this.canvas.style.width = this.cw + 'px';
+        this.canvas.style.height = this.ch + 'px';
+        this.ctx.scale(this.pixelRatio, this.pixelRatio);
         this.things.cw = this.cw;
         this.things.ch = this.ch;
     }
@@ -198,8 +203,7 @@ class Fireworks {
         this.things.clear();
         this.stop();
         window.cancelAnimationFrame(this.rafInterval);
-        this.rafInterval = null;
-        this._clear(true);
+        this._finish();
     }
     fire() {
         this.things.spawnRocket();
@@ -207,11 +211,19 @@ class Fireworks {
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
     }
+    onFinish(cb) {
+        this.finishCallbacks.push(cb);
+    }
     _clear(force = false) {
         this.ctx.globalCompositeOperation = 'destination-out';
         this.ctx.fillStyle = `rgba(0, 0, 0 ${force ? '' : ', 0.5'})`;
         this.ctx.fillRect(0, 0, this.cw, this.ch);
         this.ctx.globalCompositeOperation = 'lighter';
+    }
+    _finish() {
+        this._clear(true);
+        this.rafInterval = null;
+        this.finishCallbacks.forEach((cb) => cb());
     }
     update() {
         this._clear();
@@ -229,8 +241,7 @@ class Fireworks {
             this.rafInterval = window.requestAnimationFrame(() => this.update());
         }
         else {
-            this._clear(true);
-            this.rafInterval = null;
+            this._finish();
         }
     }
 }

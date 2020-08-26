@@ -1,33 +1,34 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define('Fireworks', factory) :
-    (global = global || self, global.Fireworks = factory());
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Fireworks = factory());
 }(this, (function () { 'use strict';
 
     /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
+    Copyright (c) Microsoft Corporation.
 
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
 
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
 
     function __values(o) {
-        var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
         if (m) return m.call(o);
-        return {
+        if (o && typeof o.length === "number") return {
             next: function () {
                 if (o && i >= o.length) o = void 0;
                 return { value: o && o[i++], done: !o };
             }
         };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     }
 
     function random(min, max) {
@@ -117,6 +118,7 @@
             ctx.moveTo(lastPosition.x, lastPosition.y);
             ctx.lineTo(this.position.x, this.position.y);
             ctx.lineWidth = this.size;
+            ctx.lineCap = 'round';
             ctx.strokeStyle = "hsla(" + this.hue + ", 100%, " + this.brightness + "%, " + this.alpha + ")";
             ctx.stroke();
         };
@@ -177,6 +179,7 @@
     var Fireworks = (function () {
         function Fireworks(container, _a) {
             var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h, _j = _b.width, width = _j === void 0 ? container.clientWidth : _j, _k = _b.height, height = _k === void 0 ? container.clientHeight : _k;
+            this.finishCallbacks = [];
             this.container = container;
             this.rocketSpawnInterval = rocketSpawnInterval;
             this.maxRockets = maxRockets;
@@ -185,9 +188,8 @@
             this.maxH = this.ch * (1 - explosionMaxHeight);
             this.minH = this.ch * (1 - explosionMinHeight);
             this.chance = explosionChance;
+            this.pixelRatio = window.devicePixelRatio || 1;
             this.canvas = document.createElement('canvas');
-            this.canvas.width = this.cw;
-            this.canvas.height = this.ch;
             this.ctx = this.canvas.getContext('2d');
             container.appendChild(this.canvas);
             this.things = new Things({
@@ -196,6 +198,7 @@
                 cw: this.cw,
                 ch: this.ch
             });
+            this.updateDimensions();
         }
         Fireworks.prototype.destroy = function () {
             this.canvas.parentElement.removeChild(this.canvas);
@@ -211,8 +214,11 @@
             return function () { return _this.stop(); };
         };
         Fireworks.prototype.updateDimensions = function () {
-            this.canvas.width = this.cw;
-            this.canvas.height = this.ch;
+            this.canvas.width = this.cw * this.pixelRatio;
+            this.canvas.height = this.ch * this.pixelRatio;
+            this.canvas.style.width = this.cw + 'px';
+            this.canvas.style.height = this.ch + 'px';
+            this.ctx.scale(this.pixelRatio, this.pixelRatio);
             this.things.cw = this.cw;
             this.things.ch = this.ch;
         };
@@ -234,8 +240,7 @@
             this.things.clear();
             this.stop();
             window.cancelAnimationFrame(this.rafInterval);
-            this.rafInterval = null;
-            this._clear(true);
+            this._finish();
         };
         Fireworks.prototype.fire = function () {
             var _this = this;
@@ -244,12 +249,20 @@
                 this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
             }
         };
+        Fireworks.prototype.onFinish = function (cb) {
+            this.finishCallbacks.push(cb);
+        };
         Fireworks.prototype._clear = function (force) {
             if (force === void 0) { force = false; }
             this.ctx.globalCompositeOperation = 'destination-out';
             this.ctx.fillStyle = "rgba(0, 0, 0 " + (force ? '' : ', 0.5') + ")";
             this.ctx.fillRect(0, 0, this.cw, this.ch);
             this.ctx.globalCompositeOperation = 'lighter';
+        };
+        Fireworks.prototype._finish = function () {
+            this._clear(true);
+            this.rafInterval = null;
+            this.finishCallbacks.forEach(function (cb) { return cb(); });
         };
         Fireworks.prototype.update = function () {
             var e_1, _a;
@@ -279,8 +292,7 @@
                 this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
             }
             else {
-                this._clear(true);
-                this.rafInterval = null;
+                this._finish();
             }
         };
         return Fireworks;

@@ -8,6 +8,7 @@ declare class Fireworks {
   update(): void
   setSize(width: number, height: number): void
   resetSize(): void
+  onFinish(cb: () => void): void
 }
 
 declare namespace Fireworks {
