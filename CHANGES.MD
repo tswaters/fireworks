@@ -1,3 +1,9 @@
+## 2.5.0
+
+- New onFinish callback to attach listeners for when the fireworks starts. (thanks kyle1320)
+- Better support for high-definition displays (thanks kyle1320)
+- Updating devDependencies (it's a thankless job)
+
 ## 2.4.0
 
 - add two options, `resetSize()` and `setSize(number, number)` to control the canvas element's size
