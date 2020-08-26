@@ -31,7 +31,8 @@
     "url": "git://github.com/tswaters/fireworks.git"
   },
   "contributors": [
-    "Andrey (https://github.com/tugrik)"
+    "Andrey (https://github.com/tugrik)",
+    "Kyle Cutler (https://github.com/kyle1320/)"
   ],
   "license": "WTFPL",
   "dependencies": {},
