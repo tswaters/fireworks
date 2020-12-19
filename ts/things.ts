@@ -5,7 +5,8 @@ type ThingOptions = {
   cw: number
   ch: number
   maxRockets: number
-  numParticles: number
+  numParticles: number,
+  rocketInitialPoint: number
 }
 
 export default class Things {
@@ -15,14 +16,16 @@ export default class Things {
   public cw: number
   public ch: number
   public rockets: number
+  public rocketInitialPoint: number
 
-  constructor({ maxRockets, numParticles, cw, ch }: ThingOptions) {
+  constructor({ maxRockets, numParticles, cw, ch, rocketInitialPoint }: ThingOptions) {
     this._set = new Set()
     this.rockets = 0
     this.maxRockets = maxRockets
     this.numParticles = numParticles
     this.cw = cw
     this.ch = ch
+    this.rocketInitialPoint = rocketInitialPoint
   }
 
   size(): number {
@@ -67,7 +70,7 @@ export default class Things {
       new Particle({
         isRocket: true,
         position: {
-          x: random(0, this.cw),
+          x: this.rocketInitialPoint ? this.rocketInitialPoint : random(0, this.cw),
           y: this.ch
         }
       })

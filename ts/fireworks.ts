@@ -9,6 +9,7 @@ type Options = {
   rocketSpawnInterval?: number
   width?: number
   height?: number
+  rocketInitialPoint?: number
 }
 
 export default class Fireworks {
@@ -23,6 +24,7 @@ export default class Fireworks {
   private things: Things
   private interval: number
   private rafInterval: number
+  private rocketInitialPoint: number
 
   private finishCallbacks: Array<() => void> = []
 
@@ -40,7 +42,8 @@ export default class Fireworks {
       explosionMaxHeight = 0.9,
       explosionChance = 0.08,
       width = container.clientWidth,
-      height = container.clientHeight
+      height = container.clientHeight,
+      rocketInitialPoint = null
     }: Options = {}
   ) {
     this.container = container
@@ -51,17 +54,19 @@ export default class Fireworks {
     this.maxH = this.ch * (1 - explosionMaxHeight)
     this.minH = this.ch * (1 - explosionMinHeight)
     this.chance = explosionChance
-
+    this.rocketInitialPoint = rocketInitialPoint
     this.pixelRatio = window.devicePixelRatio || 1
     this.canvas = document.createElement('canvas')
     this.ctx = this.canvas.getContext('2d')
+
     container.appendChild(this.canvas)
 
     this.things = new Things({
       maxRockets: this.maxRockets,
       numParticles,
       cw: this.cw,
-      ch: this.ch
+      ch: this.ch,
+      rocketInitialPoint: this.rocketInitialPoint
     })
     this.updateDimensions()
   }
