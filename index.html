@@ -37,16 +37,19 @@
         explosionChance: 0.08, // chance in each tick the rocket will explode
       })
 
-      start()
+      startFireworks()
 
-      document.addEventListener('keydown', (e) => e.which === 27 && stop())
+      document.addEventListener(
+        'keydown',
+        (e) => e.which === 27 && stopFireworks()
+      )
       spawn.addEventListener('click', () => fireworks.fire())
-      kill.addEventListener('click', () => stop(true))
-      stop.addEventListener('click', () => stop(false))
-      start.addEventListener('click', () => start())
+      kill.addEventListener('click', () => stopFireworks(true))
+      stop.addEventListener('click', () => stopFireworks(false))
+      start.addEventListener('click', () => startFireworks())
       window.addEventListener('resize', () => fireworks.resetSize())
 
-      function stop(force) {
+      function stopFireworks(force) {
         kill.style.display = 'none'
         stop.style.display = 'none'
         start.style.display = ''
@@ -54,7 +57,7 @@
         else fireworks.stop()
       }
 
-      function start() {
+      function startFireworks() {
         kill.style.display = ''
         stop.style.display = ''
         start.style.display = 'none'
