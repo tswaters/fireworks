@@ -1,9 +1,0 @@
-body {
-  background-color: black;
-}
-#container {
-  margin: 0 auto;
-  border: 1px solid white;
-  width: 100%;
-  height: calc(100vh - 40px);
-}
