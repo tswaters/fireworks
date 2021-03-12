@@ -32,6 +32,7 @@ const config = ({
     file,
     format,
     amd: { id: 'Fireworks' },
+    sourcemap: !isProduction,
   },
   plugins: [
     typescript({ target: format === 'umd' ? 'es3' : 'es6' }),
@@ -50,7 +51,7 @@ const config = ({
       serve({
         port: 8001,
         host: '0.0.0.0',
-        contentBase: ['gh-pages'],
+        contentBase: ['dist'],
         open: false,
         wait: 500,
       }),
@@ -63,12 +64,12 @@ export default [
     file: './dist/fireworks.js',
     minify: false,
     useServer: !isProduction && isWatch,
+    useHtml: !isProduction,
   }),
   config({
     format: 'umd',
     file: './dist/fireworks.min.js',
     minify: true,
-    useHtml: true,
   }),
   config({
     format: 'umd',
