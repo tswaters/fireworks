@@ -1,13 +1,12 @@
 {
   "name": "fireworks-canvas",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "fireworks example",
   "browser": "./fireworks.min.js",
   "main": "./fireworks.node.js",
   "module": "./fireworks.mjs",
   "types": "./fireworks.d.ts",
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "rollup -c",
     "start": "cross-env NODE_ENV=development npm run build -- -w",
     "lint": "eslint . --ext ts --ext js"
@@ -32,7 +31,8 @@
   },
   "contributors": [
     "Andrey (https://github.com/tugrik)",
-    "Kyle Cutler (https://github.com/kyle1320/)"
+    "Kyle Cutler (https://github.com/kyle1320/)",
+    "Aditya Satnur (https://github.com/adityasatnur)"
   ],
   "license": "WTFPL",
   "dependencies": {},

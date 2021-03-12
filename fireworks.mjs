@@ -91,13 +91,14 @@ class Particle {
 }
 
 class Things {
-    constructor({ maxRockets, numParticles, cw, ch }) {
+    constructor({ maxRockets, numParticles, cw, ch, rocketInitialPoint }) {
         this._set = new Set();
         this.rockets = 0;
         this.maxRockets = maxRockets;
         this.numParticles = numParticles;
         this.cw = cw;
         this.ch = ch;
+        this.rocketInitialPoint = rocketInitialPoint;
     }
     size() {
         return this._set.size;
@@ -127,7 +128,7 @@ class Things {
         this.add(new Particle({
             isRocket: true,
             position: {
-                x: random(0, this.cw),
+                x: this.rocketInitialPoint ? this.rocketInitialPoint : random(0, this.cw),
                 y: this.ch
             }
         }));
@@ -140,7 +141,7 @@ class Things {
 }
 
 class Fireworks {
-    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08, width = container.clientWidth, height = container.clientHeight } = {}) {
+    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08, width = container.clientWidth, height = container.clientHeight, rocketInitialPoint = null } = {}) {
         this.finishCallbacks = [];
         this.container = container;
         this.rocketSpawnInterval = rocketSpawnInterval;
@@ -150,6 +151,7 @@ class Fireworks {
         this.maxH = this.ch * (1 - explosionMaxHeight);
         this.minH = this.ch * (1 - explosionMinHeight);
         this.chance = explosionChance;
+        this.rocketInitialPoint = rocketInitialPoint;
         this.pixelRatio = window.devicePixelRatio || 1;
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -158,7 +160,8 @@ class Fireworks {
             maxRockets: this.maxRockets,
             numParticles,
             cw: this.cw,
-            ch: this.ch
+            ch: this.ch,
+            rocketInitialPoint: this.rocketInitialPoint
         });
         this.updateDimensions();
     }

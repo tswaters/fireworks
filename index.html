@@ -1,10 +1,19 @@
 <!doctype html>
-<!DOCTYPE html>
 <html>
   <head>
     <title>Fireworks</title>
     <meta charset="utf-8" >
-    <link rel="stylesheet" href="/example.css" >
+    <style>
+      body {
+        background-color: black;
+      }
+      #container {
+        margin: 0 auto;
+        border: 1px solid white;
+        width: 100%;
+        height: calc(100vh - 40px);
+      }
+    </style>
   
   <script src="fireworks.min.js"></script></head>
   <body>
@@ -13,9 +22,44 @@
     <button id="kill">Kill!</button>
     <button id="stop">Stop!</button>
     <button style="display: none" id="start">Start!</button>
-    <script src="/example.js"></script>
     <script>
-      example(Fireworks, document.getElementById('container'))
+      const container = document.getElementById('container')
+      const spawn = document.getElementById('spawn')
+      const kill = document.getElementById('kill')
+      const stop = document.getElementById('stop')
+      const start = document.getElementById('start')
+      const fireworks = new Fireworks(container, {
+        maxRockets: 3, // max # of rockets to spawn
+        rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
+        numParticles: 100, // number of particles to spawn when rocket explodes (+0-10)
+        explosionMinHeight: 0.2, // percentage. min height at which rockets can explode
+        explosionMaxHeight: 0.9, // percentage. max height before a particle is exploded
+        explosionChance: 0.08, // chance in each tick the rocket will explode
+      })
+
+      start()
+
+      document.addEventListener('keydown', (e) => e.which === 27 && stop())
+      spawn.addEventListener('click', () => fireworks.fire())
+      kill.addEventListener('click', () => stop(true))
+      stop.addEventListener('click', () => stop(false))
+      start.addEventListener('click', () => start())
+      window.addEventListener('resize', () => fireworks.resetSize())
+
+      function stop(force) {
+        kill.style.display = 'none'
+        stop.style.display = 'none'
+        start.style.display = ''
+        if (force) fireworks.kill()
+        else fireworks.stop()
+      }
+
+      function start() {
+        kill.style.display = ''
+        stop.style.display = ''
+        start.style.display = 'none'
+        fireworks.start()
+      }
     </script>
   </body>
 </html>

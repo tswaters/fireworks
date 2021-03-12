@@ -127,13 +127,14 @@
 
     var Things = (function () {
         function Things(_a) {
-            var maxRockets = _a.maxRockets, numParticles = _a.numParticles, cw = _a.cw, ch = _a.ch;
+            var maxRockets = _a.maxRockets, numParticles = _a.numParticles, cw = _a.cw, ch = _a.ch, rocketInitialPoint = _a.rocketInitialPoint;
             this._set = new Set();
             this.rockets = 0;
             this.maxRockets = maxRockets;
             this.numParticles = numParticles;
             this.cw = cw;
             this.ch = ch;
+            this.rocketInitialPoint = rocketInitialPoint;
         }
         Things.prototype.size = function () {
             return this._set.size;
@@ -163,7 +164,7 @@
             this.add(new Particle({
                 isRocket: true,
                 position: {
-                    x: random(0, this.cw),
+                    x: this.rocketInitialPoint ? this.rocketInitialPoint : random(0, this.cw),
                     y: this.ch
                 }
             }));
@@ -178,7 +179,7 @@
 
     var Fireworks = (function () {
         function Fireworks(container, _a) {
-            var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h, _j = _b.width, width = _j === void 0 ? container.clientWidth : _j, _k = _b.height, height = _k === void 0 ? container.clientHeight : _k;
+            var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h, _j = _b.width, width = _j === void 0 ? container.clientWidth : _j, _k = _b.height, height = _k === void 0 ? container.clientHeight : _k, _l = _b.rocketInitialPoint, rocketInitialPoint = _l === void 0 ? null : _l;
             this.finishCallbacks = [];
             this.container = container;
             this.rocketSpawnInterval = rocketSpawnInterval;
@@ -188,6 +189,7 @@
             this.maxH = this.ch * (1 - explosionMaxHeight);
             this.minH = this.ch * (1 - explosionMinHeight);
             this.chance = explosionChance;
+            this.rocketInitialPoint = rocketInitialPoint;
             this.pixelRatio = window.devicePixelRatio || 1;
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
@@ -196,7 +198,8 @@
                 maxRockets: this.maxRockets,
                 numParticles: numParticles,
                 cw: this.cw,
-                ch: this.ch
+                ch: this.ch,
+                rocketInitialPoint: this.rocketInitialPoint
             });
             this.updateDimensions();
         }

@@ -19,6 +19,7 @@ declare namespace Fireworks {
     explosionMaxHeight?: number
     explosionChance?: number
     rocketSpawnInterval?: number
+    rocketInitialPoint?: number
   }
 }
 
