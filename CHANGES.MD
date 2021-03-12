@@ -1,3 +1,7 @@
+## 2.5.1
+
+- Adding a new option rocketInitialPoint where a user can customise starting point of firework (thanks adityasatnur)
+
 ## 2.5.0
 
 - New onFinish callback to attach listeners for when the fireworks starts. (thanks kyle1320)
