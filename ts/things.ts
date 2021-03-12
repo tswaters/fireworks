@@ -38,6 +38,7 @@ export default class Things {
 
   clear(): void {
     this._set.clear()
+    this.rockets = 0
   }
 
   delete(thing: Particle): void {
