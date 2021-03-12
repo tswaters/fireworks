@@ -30,7 +30,7 @@ export default class Particle {
     isRocket = false,
     hue = random(1, 360),
     brightness = random(50, 60),
-    position
+    position,
   }: ParticleOptions) {
     this.isRocket = isRocket
     this.position = position
@@ -39,7 +39,7 @@ export default class Particle {
     if (this.isRocket) {
       this.velocity = {
         x: random(-3, 3),
-        y: random(-7, -3)
+        y: random(-7, -3),
       }
       this.shrink = 0.999
       this.resistance = 1
@@ -48,7 +48,7 @@ export default class Particle {
       const speed = Math.cos(random(0, TAU)) * 15
       this.velocity = {
         x: Math.cos(angle) * speed,
-        y: Math.sin(angle) * speed
+        y: Math.sin(angle) * speed,
       }
       this.shrink = random(0, 0.05) + 0.93
       this.resistance = 0.92
@@ -70,10 +70,10 @@ export default class Particle {
     return new Particle({
       position: {
         x: this.position.x,
-        y: this.position.y
+        y: this.position.y,
       },
       hue: this.hue,
-      brightness: this.brightness
+      brightness: this.brightness,
     })
   }
 

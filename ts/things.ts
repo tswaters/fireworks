@@ -5,7 +5,7 @@ type ThingOptions = {
   cw: number
   ch: number
   maxRockets: number
-  numParticles: number,
+  numParticles: number
   rocketInitialPoint: number
   cannons: Point[]
 }

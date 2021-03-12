@@ -93,9 +93,9 @@ export default class Fireworks {
   private updateDimensions(): void {
     this.canvas.width = this.cw * this.pixelRatio
     this.canvas.height = this.ch * this.pixelRatio
-    this.canvas.style.width = this.cw + 'px'
-    this.canvas.style.height = this.ch + 'px'
-    this.ctx.scale(this.pixelRatio, this.pixelRatio);
+    this.canvas.style.width = `${this.cw}px`
+    this.canvas.style.height = `${this.ch}px`
+    this.ctx.scale(this.pixelRatio, this.pixelRatio)
     this.things.cw = this.cw
     this.things.ch = this.ch
   }
