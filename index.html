@@ -15,7 +15,7 @@
       }
     </style>
   
-  <script src="fireworks.min.js"></script></head>
+  <script src="fireworks.js"></script></head>
   <body>
     <div id="container"></div>
     <button id="spawn">Fire!</button>
@@ -28,25 +28,38 @@
       const kill = document.getElementById('kill')
       const stop = document.getElementById('stop')
       const start = document.getElementById('start')
+      const width = container.clientWidth
       const fireworks = new Fireworks(container, {
-        maxRockets: 3, // max # of rockets to spawn
-        rocketSpawnInterval: 150, // millisends to check if new rockets should spawn
-        numParticles: 100, // number of particles to spawn when rocket explodes (+0-10)
+        maxRockets: 15, // max # of rockets to spawn
+        rocketSpawnInterval: 50, // millisends to check if new rockets should spawn
+        numParticles: 200, // number of particles to spawn when rocket explodes (+0-10)
         explosionMinHeight: 0.2, // percentage. min height at which rockets can explode
         explosionMaxHeight: 0.9, // percentage. max height before a particle is exploded
-        explosionChance: 0.08, // chance in each tick the rocket will explode
+        explosionChance: 0.02, // chance in each tick the rocket will explode
+
+        // array of points, defaults to {}
+        // when x is null or not defined, uses random position between 0 -> container width
+        // when y is null or not defined, uses container height
+        cannons: [{ x: width * 0.2 }, { x: width * 0.8 }],
+
+        // defines a single cannon with null for height and provided value for X.
+        // will be apended to provided cannons
+        rocketInitialPoint: width * 0.5,
       })
 
-      start()
+      startFireworks()
 
-      document.addEventListener('keydown', (e) => e.which === 27 && stop())
+      document.addEventListener(
+        'keydown',
+        (e) => e.which === 27 && stopFireworks()
+      )
       spawn.addEventListener('click', () => fireworks.fire())
-      kill.addEventListener('click', () => stop(true))
-      stop.addEventListener('click', () => stop(false))
-      start.addEventListener('click', () => start())
+      kill.addEventListener('click', () => stopFireworks(true))
+      stop.addEventListener('click', () => stopFireworks(false))
+      start.addEventListener('click', () => startFireworks())
       window.addEventListener('resize', () => fireworks.resetSize())
 
-      function stop(force) {
+      function stopFireworks(force) {
         kill.style.display = 'none'
         stop.style.display = 'none'
         start.style.display = ''
@@ -54,7 +67,7 @@
         else fireworks.stop()
       }
 
-      function start() {
+      function startFireworks() {
         kill.style.display = ''
         stop.style.display = ''
         start.style.display = 'none'

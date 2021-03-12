@@ -1,3 +1,8 @@
+declare type Point = {
+  x: number
+  y: number
+}
+
 declare class Fireworks {
   constructor(container: HTMLElement, options?: Fireworks.FireworksOptions)
   destroy(): void
@@ -20,6 +25,7 @@ declare namespace Fireworks {
     explosionChance?: number
     rocketSpawnInterval?: number
     rocketInitialPoint?: number
+    cannons?: Point[]
   }
 }
 

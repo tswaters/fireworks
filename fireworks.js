@@ -19,6 +19,17 @@
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
 
+    var __assign = function() {
+        __assign = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign.apply(this, arguments);
+    };
+
     function __values(o) {
         var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
         if (m) return m.call(o);
@@ -127,7 +138,7 @@
 
     var Things = (function () {
         function Things(_a) {
-            var maxRockets = _a.maxRockets, numParticles = _a.numParticles, cw = _a.cw, ch = _a.ch, rocketInitialPoint = _a.rocketInitialPoint;
+            var maxRockets = _a.maxRockets, numParticles = _a.numParticles, cw = _a.cw, ch = _a.ch, rocketInitialPoint = _a.rocketInitialPoint, cannons = _a.cannons;
             this._set = new Set();
             this.rockets = 0;
             this.maxRockets = maxRockets;
@@ -135,6 +146,10 @@
             this.cw = cw;
             this.ch = ch;
             this.rocketInitialPoint = rocketInitialPoint;
+            this.cannons = cannons;
+            if (this.rocketInitialPoint) {
+                this.cannons.push({ x: this.rocketInitialPoint, y: this.ch });
+            }
         }
         Things.prototype.size = function () {
             return this._set.size;
@@ -144,6 +159,7 @@
         };
         Things.prototype.clear = function () {
             this._set.clear();
+            this.rockets = 0;
         };
         Things.prototype["delete"] = function (thing) {
             this._set["delete"](thing);
@@ -161,12 +177,11 @@
         };
         Things.prototype.spawnRocket = function () {
             this.rockets++;
+            var cannonIndex = Math.floor(random(0, this.cannons.length));
+            var cannon = this.cannons[cannonIndex] || {};
             this.add(new Particle({
                 isRocket: true,
-                position: {
-                    x: this.rocketInitialPoint ? this.rocketInitialPoint : random(0, this.cw),
-                    y: this.ch
-                }
+                position: __assign(__assign(__assign({}, cannon), (cannon.x == null && { x: random(0, this.cw) })), (cannon.y == null && { y: this.ch }))
             }));
         };
         Things.prototype.spawnRockets = function () {
@@ -179,7 +194,7 @@
 
     var Fireworks = (function () {
         function Fireworks(container, _a) {
-            var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h, _j = _b.width, width = _j === void 0 ? container.clientWidth : _j, _k = _b.height, height = _k === void 0 ? container.clientHeight : _k, _l = _b.rocketInitialPoint, rocketInitialPoint = _l === void 0 ? null : _l;
+            var _b = _a === void 0 ? {} : _a, _c = _b.rocketSpawnInterval, rocketSpawnInterval = _c === void 0 ? 150 : _c, _d = _b.maxRockets, maxRockets = _d === void 0 ? 3 : _d, _e = _b.numParticles, numParticles = _e === void 0 ? 100 : _e, _f = _b.explosionMinHeight, explosionMinHeight = _f === void 0 ? 0.2 : _f, _g = _b.explosionMaxHeight, explosionMaxHeight = _g === void 0 ? 0.9 : _g, _h = _b.explosionChance, explosionChance = _h === void 0 ? 0.08 : _h, _j = _b.width, width = _j === void 0 ? container.clientWidth : _j, _k = _b.height, height = _k === void 0 ? container.clientHeight : _k, _l = _b.rocketInitialPoint, rocketInitialPoint = _l === void 0 ? null : _l, _m = _b.cannons, cannons = _m === void 0 ? [] : _m;
             this.finishCallbacks = [];
             this.container = container;
             this.rocketSpawnInterval = rocketSpawnInterval;
@@ -189,7 +204,6 @@
             this.maxH = this.ch * (1 - explosionMaxHeight);
             this.minH = this.ch * (1 - explosionMinHeight);
             this.chance = explosionChance;
-            this.rocketInitialPoint = rocketInitialPoint;
             this.pixelRatio = window.devicePixelRatio || 1;
             this.canvas = document.createElement('canvas');
             this.ctx = this.canvas.getContext('2d');
@@ -199,7 +213,8 @@
                 numParticles: numParticles,
                 cw: this.cw,
                 ch: this.ch,
-                rocketInitialPoint: this.rocketInitialPoint
+                rocketInitialPoint: rocketInitialPoint,
+                cannons: cannons
             });
             this.updateDimensions();
         }
@@ -219,8 +234,8 @@
         Fireworks.prototype.updateDimensions = function () {
             this.canvas.width = this.cw * this.pixelRatio;
             this.canvas.height = this.ch * this.pixelRatio;
-            this.canvas.style.width = this.cw + 'px';
-            this.canvas.style.height = this.ch + 'px';
+            this.canvas.style.width = this.cw + "px";
+            this.canvas.style.height = this.ch + "px";
             this.ctx.scale(this.pixelRatio, this.pixelRatio);
             this.things.cw = this.cw;
             this.things.ch = this.ch;

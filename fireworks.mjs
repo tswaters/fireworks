@@ -4,14 +4,14 @@ function random(min, max) {
 const TAU = Math.PI * 2;
 
 class Particle {
-    constructor({ isRocket = false, hue = random(1, 360), brightness = random(50, 60), position }) {
+    constructor({ isRocket = false, hue = random(1, 360), brightness = random(50, 60), position, }) {
         this.isRocket = isRocket;
         this.position = position;
         this.positions = [this.position, this.position, this.position];
         if (this.isRocket) {
             this.velocity = {
                 x: random(-3, 3),
-                y: random(-7, -3)
+                y: random(-7, -3),
             };
             this.shrink = 0.999;
             this.resistance = 1;
@@ -21,7 +21,7 @@ class Particle {
             const speed = Math.cos(random(0, TAU)) * 15;
             this.velocity = {
                 x: Math.cos(angle) * speed,
-                y: Math.sin(angle) * speed
+                y: Math.sin(angle) * speed,
             };
             this.shrink = random(0, 0.05) + 0.93;
             this.resistance = 0.92;
@@ -37,10 +37,10 @@ class Particle {
         return new Particle({
             position: {
                 x: this.position.x,
-                y: this.position.y
+                y: this.position.y,
             },
             hue: this.hue,
-            brightness: this.brightness
+            brightness: this.brightness,
         });
     }
     shouldRemove(cw, ch) {
@@ -91,7 +91,7 @@ class Particle {
 }
 
 class Things {
-    constructor({ maxRockets, numParticles, cw, ch, rocketInitialPoint }) {
+    constructor({ maxRockets, numParticles, cw, ch, rocketInitialPoint, cannons, }) {
         this._set = new Set();
         this.rockets = 0;
         this.maxRockets = maxRockets;
@@ -99,6 +99,10 @@ class Things {
         this.cw = cw;
         this.ch = ch;
         this.rocketInitialPoint = rocketInitialPoint;
+        this.cannons = cannons;
+        if (this.rocketInitialPoint) {
+            this.cannons.push({ x: this.rocketInitialPoint, y: this.ch });
+        }
     }
     size() {
         return this._set.size;
@@ -108,6 +112,7 @@ class Things {
     }
     clear() {
         this._set.clear();
+        this.rockets = 0;
     }
     delete(thing) {
         this._set.delete(thing);
@@ -125,12 +130,11 @@ class Things {
     }
     spawnRocket() {
         this.rockets++;
+        const cannonIndex = Math.floor(random(0, this.cannons.length));
+        const cannon = this.cannons[cannonIndex] || {};
         this.add(new Particle({
             isRocket: true,
-            position: {
-                x: this.rocketInitialPoint ? this.rocketInitialPoint : random(0, this.cw),
-                y: this.ch
-            }
+            position: Object.assign(Object.assign(Object.assign({}, cannon), (cannon.x == null && { x: random(0, this.cw) })), (cannon.y == null && { y: this.ch })),
         }));
     }
     spawnRockets() {
@@ -141,7 +145,7 @@ class Things {
 }
 
 class Fireworks {
-    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08, width = container.clientWidth, height = container.clientHeight, rocketInitialPoint = null } = {}) {
+    constructor(container, { rocketSpawnInterval = 150, maxRockets = 3, numParticles = 100, explosionMinHeight = 0.2, explosionMaxHeight = 0.9, explosionChance = 0.08, width = container.clientWidth, height = container.clientHeight, rocketInitialPoint = null, cannons = [], } = {}) {
         this.finishCallbacks = [];
         this.container = container;
         this.rocketSpawnInterval = rocketSpawnInterval;
@@ -151,7 +155,6 @@ class Fireworks {
         this.maxH = this.ch * (1 - explosionMaxHeight);
         this.minH = this.ch * (1 - explosionMinHeight);
         this.chance = explosionChance;
-        this.rocketInitialPoint = rocketInitialPoint;
         this.pixelRatio = window.devicePixelRatio || 1;
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
@@ -161,7 +164,8 @@ class Fireworks {
             numParticles,
             cw: this.cw,
             ch: this.ch,
-            rocketInitialPoint: this.rocketInitialPoint
+            rocketInitialPoint,
+            cannons,
         });
         this.updateDimensions();
     }
@@ -180,8 +184,8 @@ class Fireworks {
     updateDimensions() {
         this.canvas.width = this.cw * this.pixelRatio;
         this.canvas.height = this.ch * this.pixelRatio;
-        this.canvas.style.width = this.cw + 'px';
-        this.canvas.style.height = this.ch + 'px';
+        this.canvas.style.width = `${this.cw}px`;
+        this.canvas.style.height = `${this.ch}px`;
         this.ctx.scale(this.pixelRatio, this.pixelRatio);
         this.things.cw = this.cw;
         this.things.ch = this.ch;
