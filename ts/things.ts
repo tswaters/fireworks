@@ -1,4 +1,4 @@
-import Particle from './particle'
+import Particle, { Point } from './particle'
 import { random } from './util'
 
 type ThingOptions = {
@@ -7,6 +7,7 @@ type ThingOptions = {
   maxRockets: number
   numParticles: number,
   rocketInitialPoint: number
+  cannons: Point[]
 }
 
 export default class Things {
@@ -17,8 +18,16 @@ export default class Things {
   public ch: number
   public rockets: number
   public rocketInitialPoint: number
+  private cannons: Point[]
 
-  constructor({ maxRockets, numParticles, cw, ch, rocketInitialPoint }: ThingOptions) {
+  constructor({
+    maxRockets,
+    numParticles,
+    cw,
+    ch,
+    rocketInitialPoint,
+    cannons,
+  }: ThingOptions) {
     this._set = new Set()
     this.rockets = 0
     this.maxRockets = maxRockets
@@ -26,6 +35,12 @@ export default class Things {
     this.cw = cw
     this.ch = ch
     this.rocketInitialPoint = rocketInitialPoint
+
+    this.cannons = cannons
+
+    if (this.rocketInitialPoint) {
+      this.cannons.push({ x: this.rocketInitialPoint, y: this.ch })
+    }
   }
 
   size(): number {
@@ -67,13 +82,16 @@ export default class Things {
    */
   spawnRocket(): void {
     this.rockets++
+    const cannonIndex = Math.floor(random(0, this.cannons.length))
+    const cannon = this.cannons[cannonIndex] || ({} as Point)
     this.add(
       new Particle({
         isRocket: true,
         position: {
-          x: this.rocketInitialPoint ? this.rocketInitialPoint : random(0, this.cw),
-          y: this.ch
-        }
+          ...cannon,
+          ...(cannon.x == null && { x: random(0, this.cw) }),
+          ...(cannon.y == null && { y: this.ch }),
+        },
       })
     )
   }

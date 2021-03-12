@@ -1,3 +1,4 @@
+import { Point } from './particle'
 import Things from './things'
 
 type Options = {
@@ -10,6 +11,7 @@ type Options = {
   width?: number
   height?: number
   rocketInitialPoint?: number
+  cannons?: Point[]
 }
 
 export default class Fireworks {
@@ -24,7 +26,6 @@ export default class Fireworks {
   private things: Things
   private interval: number
   private rafInterval: number
-  private rocketInitialPoint: number
 
   private finishCallbacks: Array<() => void> = []
 
@@ -43,7 +44,8 @@ export default class Fireworks {
       explosionChance = 0.08,
       width = container.clientWidth,
       height = container.clientHeight,
-      rocketInitialPoint = null
+      rocketInitialPoint = null,
+      cannons = [],
     }: Options = {}
   ) {
     this.container = container
@@ -54,7 +56,6 @@ export default class Fireworks {
     this.maxH = this.ch * (1 - explosionMaxHeight)
     this.minH = this.ch * (1 - explosionMinHeight)
     this.chance = explosionChance
-    this.rocketInitialPoint = rocketInitialPoint
     this.pixelRatio = window.devicePixelRatio || 1
     this.canvas = document.createElement('canvas')
     this.ctx = this.canvas.getContext('2d')
@@ -66,7 +67,8 @@ export default class Fireworks {
       numParticles,
       cw: this.cw,
       ch: this.ch,
-      rocketInitialPoint: this.rocketInitialPoint
+      rocketInitialPoint,
+      cannons,
     })
     this.updateDimensions()
   }

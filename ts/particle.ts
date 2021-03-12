@@ -1,6 +1,6 @@
 import { random, TAU } from './util'
 
-type Point = {
+export type Point = {
   x: number
   y: number
 }

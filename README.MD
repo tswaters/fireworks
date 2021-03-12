@@ -32,6 +32,17 @@ const options = {
   explosionChance: 0.08, // chance in each tick the rocket will explode
   width: container.clientWidth, // override the width, defaults to container width
   height: container.clientHeight // override the height, defaults to container height
+
+
+  // array of points, defaults to []
+  // when x is null or not defined, uses random position between 0 -> container width
+  // when y is null or not defined, uses container height
+  cannons: [{ x: width * 0.2 }, { x: width * 0.8 }],
+
+  // defines a single cannon with null for height and provided value for X.
+  // will be apended to provided cannons
+  rocketInitialPoint: width * 0.5,
+
 }
 
 // instantiate the class and call start
