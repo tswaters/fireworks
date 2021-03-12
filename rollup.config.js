@@ -8,6 +8,17 @@ import serve from 'rollup-plugin-serve'
 const isWatch = process.argv.includes('-w') || process.argv.includes('--watch')
 const isProduction = process.env.NODE_ENV !== 'development'
 
+const distFiles = [
+  'fireworks.d.ts',
+  'package.json',
+  'package-lock.json',
+  'LICENSE',
+  'README.MD',
+  'RELEASE.MD',
+  'CHANGES.MD',
+  'bower.json',
+]
+
 const config = ({
   format,
   file,
@@ -24,12 +35,7 @@ const config = ({
   },
   plugins: [
     typescript({ target: format === 'umd' ? 'es3' : 'es6' }),
-    copy({
-      files: ['./fireworks.d.ts'].concat(
-        isProduction ? [] : ['./examples/example.css', './examples/example.js']
-      ),
-      dest: './dist/',
-    }),
+    copy({ files: distFiles, dest: './dist/' }),
     useHtml &&
       html({
         template: './html/index.html',
@@ -44,8 +50,7 @@ const config = ({
       serve({
         port: 8001,
         host: '0.0.0.0',
-        path: 'examples/index.html',
-        contentBase: ['dist', 'examples'],
+        contentBase: ['gh-pages'],
         open: false,
         wait: 500,
       }),
@@ -62,6 +67,12 @@ export default [
   config({
     format: 'umd',
     file: './dist/fireworks.min.js',
+    minify: true,
+    useHtml: true,
+  }),
+  config({
+    format: 'umd',
+    file: './gh-pages/fireworks.min.js',
     minify: true,
     useHtml: true,
   }),
