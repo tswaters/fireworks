@@ -80,13 +80,12 @@ export default class Fireworks {
   }
 
   start(): () => void {
-    if (this.maxRockets > 0) {
-      this.interval = window.setInterval(
-        () => this.things.spawnRockets(),
-        this.rocketSpawnInterval
-      )
-      this.rafInterval = window.requestAnimationFrame(() => this.update())
-    }
+    if (this.interval != null) return
+    this.interval = window.setInterval(
+      () => this.things.spawnRockets(),
+      this.rocketSpawnInterval
+    )
+    this.rafInterval = window.requestAnimationFrame(() => this.update())
     return (): void => this.stop()
   }
 
