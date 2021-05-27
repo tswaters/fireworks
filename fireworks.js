@@ -225,10 +225,10 @@
         };
         Fireworks.prototype.start = function () {
             var _this = this;
-            if (this.maxRockets > 0) {
-                this.interval = window.setInterval(function () { return _this.things.spawnRockets(); }, this.rocketSpawnInterval);
-                this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
-            }
+            if (this.interval != null)
+                return;
+            this.interval = window.setInterval(function () { return _this.things.spawnRockets(); }, this.rocketSpawnInterval);
+            this.rafInterval = window.requestAnimationFrame(function () { return _this.update(); });
             return function () { return _this.stop(); };
         };
         Fireworks.prototype.updateDimensions = function () {

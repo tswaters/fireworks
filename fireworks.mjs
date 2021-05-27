@@ -175,10 +175,10 @@ class Fireworks {
         window.cancelAnimationFrame(this.rafInterval);
     }
     start() {
-        if (this.maxRockets > 0) {
-            this.interval = window.setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
-            this.rafInterval = window.requestAnimationFrame(() => this.update());
-        }
+        if (this.interval != null)
+            return;
+        this.interval = window.setInterval(() => this.things.spawnRockets(), this.rocketSpawnInterval);
+        this.rafInterval = window.requestAnimationFrame(() => this.update());
         return () => this.stop();
     }
     updateDimensions() {

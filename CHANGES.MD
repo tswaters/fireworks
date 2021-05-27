@@ -1,3 +1,7 @@
+## 2.6.1
+
+- Make start idempotent (#16)
+
 ## 2.6.0
 
 - Adding cannons option
