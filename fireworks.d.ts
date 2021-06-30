@@ -26,6 +26,8 @@ declare namespace Fireworks {
     rocketSpawnInterval?: number
     rocketInitialPoint?: number
     cannons?: Point[]
+    width?: number
+    height?: number
   }
 }
 
