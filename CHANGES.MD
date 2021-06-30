@@ -1,3 +1,7 @@
+## 2.6.2
+
+- Add `height` and `width` properties to `FireworksOptions` typescript definition
+
 ## 2.6.1
 
 - Make start idempotent (#16)
