@@ -33,7 +33,8 @@
   "contributors": [
     "Andrey (https://github.com/tugrik)",
     "Kyle Cutler (https://github.com/kyle1320/)",
-    "Aditya Satnur (https://github.com/adityasatnur)"
+    "Aditya Satnur (https://github.com/adityasatnur)",
+    "Thomas Dailey (https://github.com/daileytj)"
   ],
   "license": "WTFPL",
   "devDependencies": {
