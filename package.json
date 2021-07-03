@@ -36,7 +36,6 @@
     "Aditya Satnur (https://github.com/adityasatnur)"
   ],
   "license": "WTFPL",
-  "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.25.0",
     "@typescript-eslint/parser": "^4.25.0",
@@ -46,7 +45,7 @@
     "prettier": "^2.3.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.50.1",
-    "rollup-plugin-cpy": "^2.0.1",
+    "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-html2": "^2.0.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-serve": "^1.1.0",

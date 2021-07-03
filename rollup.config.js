@@ -1,7 +1,7 @@
 import resolve from 'rollup-plugin-node-resolve'
 import { terser } from 'rollup-plugin-terser'
 import typescript from 'rollup-plugin-typescript'
-import copy from 'rollup-plugin-cpy'
+import copy from 'rollup-plugin-copy'
 import html from 'rollup-plugin-html2'
 import serve from 'rollup-plugin-serve'
 
@@ -36,7 +36,9 @@ const config = ({
   },
   plugins: [
     typescript({ target: format === 'umd' ? 'es3' : 'es6' }),
-    copy({ files: distFiles, dest: './dist/' }),
+    copy({
+      targets: distFiles.map((file) => ({ src: file, dest: './dist/' })),
+    }),
     useHtml &&
       html({
         template: './html/index.html',
