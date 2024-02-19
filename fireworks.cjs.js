@@ -253,4 +253,4 @@ class Fireworks {
     }
 }
 
-module.exports = Fireworks;
+exports.Fireworks = Fireworks;

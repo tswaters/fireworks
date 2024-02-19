@@ -1,10 +1,10 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define('Fireworks', factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.Fireworks = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define('Fireworks', ['exports'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Fireworks = {}));
+})(this, (function (exports) { 'use strict';
 
-    /*! *****************************************************************************
+    /******************************************************************************
     Copyright (c) Microsoft Corporation.
 
     Permission to use, copy, modify, and/or distribute this software for any
@@ -18,6 +18,8 @@
     OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
     PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
+    /* global Reflect, Promise, SuppressedError, Symbol */
+
 
     var __assign = function() {
         __assign = Object.assign || function __assign(t) {
@@ -42,6 +44,11 @@
         throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
     }
 
+    typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+        var e = new Error(message);
+        return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+    };
+
     function random(min, max) {
         return Math.random() * (max - min) + min;
     }
@@ -56,7 +63,7 @@
             if (this.isRocket) {
                 this.velocity = {
                     x: random(-3, 3),
-                    y: random(-7, -3)
+                    y: random(-7, -3),
                 };
                 this.shrink = 0.999;
                 this.resistance = 1;
@@ -66,7 +73,7 @@
                 var speed = Math.cos(random(0, TAU)) * 15;
                 this.velocity = {
                     x: Math.cos(angle) * speed,
-                    y: Math.sin(angle) * speed
+                    y: Math.sin(angle) * speed,
                 };
                 this.shrink = random(0, 0.05) + 0.93;
                 this.resistance = 0.92;
@@ -82,10 +89,10 @@
             return new Particle({
                 position: {
                     x: this.position.x,
-                    y: this.position.y
+                    y: this.position.y,
                 },
                 hue: this.hue,
-                brightness: this.brightness
+                brightness: this.brightness,
             });
         };
         Particle.prototype.shouldRemove = function (cw, ch) {
@@ -130,7 +137,7 @@
             ctx.lineTo(this.position.x, this.position.y);
             ctx.lineWidth = this.size;
             ctx.lineCap = 'round';
-            ctx.strokeStyle = "hsla(" + this.hue + ", 100%, " + this.brightness + "%, " + this.alpha + ")";
+            ctx.strokeStyle = "hsla(".concat(this.hue, ", 100%, ").concat(this.brightness, "%, ").concat(this.alpha, ")");
             ctx.stroke();
         };
         return Particle;
@@ -161,8 +168,8 @@
             this._set.clear();
             this.rockets = 0;
         };
-        Things.prototype["delete"] = function (thing) {
-            this._set["delete"](thing);
+        Things.prototype.delete = function (thing) {
+            this._set.delete(thing);
             if (thing.isRocket)
                 this.rockets--;
         };
@@ -173,7 +180,7 @@
             for (var i = 0; i < this.numParticles; i += 1) {
                 this.add(particle.clone());
             }
-            this["delete"](particle);
+            this.delete(particle);
         };
         Things.prototype.spawnRocket = function () {
             this.rockets++;
@@ -181,7 +188,7 @@
             var cannon = this.cannons[cannonIndex] || {};
             this.add(new Particle({
                 isRocket: true,
-                position: __assign(__assign(__assign({}, cannon), (cannon.x == null && { x: random(0, this.cw) })), (cannon.y == null && { y: this.ch }))
+                position: __assign(__assign(__assign({}, cannon), (cannon.x == null && { x: random(0, this.cw) })), (cannon.y == null && { y: this.ch })),
             }));
         };
         Things.prototype.spawnRockets = function () {
@@ -214,7 +221,7 @@
                 cw: this.cw,
                 ch: this.ch,
                 rocketInitialPoint: rocketInitialPoint,
-                cannons: cannons
+                cannons: cannons,
             });
             this.updateDimensions();
         }
@@ -234,8 +241,8 @@
         Fireworks.prototype.updateDimensions = function () {
             this.canvas.width = this.cw * this.pixelRatio;
             this.canvas.height = this.ch * this.pixelRatio;
-            this.canvas.style.width = this.cw + "px";
-            this.canvas.style.height = this.ch + "px";
+            this.canvas.style.width = "".concat(this.cw, "px");
+            this.canvas.style.height = "".concat(this.ch, "px");
             this.ctx.scale(this.pixelRatio, this.pixelRatio);
             this.things.cw = this.cw;
             this.things.ch = this.ch;
@@ -273,7 +280,7 @@
         Fireworks.prototype._clear = function (force) {
             if (force === void 0) { force = false; }
             this.ctx.globalCompositeOperation = 'destination-out';
-            this.ctx.fillStyle = "rgba(0, 0, 0 " + (force ? '' : ', 0.5') + ")";
+            this.ctx.fillStyle = "rgba(0, 0, 0 ".concat(force ? '' : ', 0.5', ")");
             this.ctx.fillRect(0, 0, this.cw, this.ch);
             this.ctx.globalCompositeOperation = 'lighter';
         };
@@ -292,7 +299,7 @@
                     particle.draw(this.ctx);
                     particle.update();
                     if (particle.shouldRemove(this.cw, this.ch)) {
-                        this.things["delete"](particle);
+                        this.things.delete(particle);
                     }
                     else if (particle.shouldExplode(this.maxH, this.minH, this.chance)) {
                         this.things.explode(particle);
@@ -302,7 +309,7 @@
             catch (e_1_1) { e_1 = { error: e_1_1 }; }
             finally {
                 try {
-                    if (_c && !_c.done && (_a = _b["return"])) _a.call(_b);
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
                 }
                 finally { if (e_1) throw e_1.error; }
             }
@@ -316,6 +323,6 @@
         return Fireworks;
     }());
 
-    return Fireworks;
+    exports.Fireworks = Fireworks;
 
-})));
+}));

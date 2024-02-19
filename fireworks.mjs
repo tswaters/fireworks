@@ -251,4 +251,4 @@ class Fireworks {
     }
 }
 
-export default Fireworks;
+export { Fireworks };

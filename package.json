@@ -1,9 +1,9 @@
 {
   "name": "fireworks-canvas",
-  "version": "2.6.2",
+  "version": "2.6.1",
   "description": "fireworks example",
   "browser": "./fireworks.min.js",
-  "main": "./fireworks.node.js",
+  "main": "./fireworks.cjs.js",
   "module": "./fireworks.mjs",
   "types": "./fireworks.d.ts",
   "scripts": {
@@ -17,7 +17,7 @@
     "fireworks.min.js",
     "fireworks.js",
     "fireworks.mjs",
-    "fireworks.node.js",
+    "fireworks.cjs.js",
     "README.MD",
     "LICENSE",
     "package.json"
@@ -38,27 +38,28 @@
   ],
   "license": "WTFPL",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
+    "@rollup/plugin-html": "^1.0.3",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
     "cross-env": "^7.0.3",
-    "eslint": "^7.27.0",
-    "eslint-config-prettier": "^8.3.0",
-    "prettier": "^2.3.0",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.50.1",
-    "rollup-plugin-copy": "^3.4.0",
-    "rollup-plugin-html2": "^2.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript": "^1.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.12.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-html2": "^4.0.0",
+    "rollup-plugin-serve": "^1.1.1",
     "tslib": "^2.2.0",
-    "typescript": "^4.3.2"
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^7.0.1"
   },
   "eslintIgnore": [
     "dist",
-    "node_modules",
-    "examples"
+    "examples",
+    "gh-pages",
+    "node_modules"
   ],
   "eslintConfig": {
     "root": true,
