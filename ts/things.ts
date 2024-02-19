@@ -92,7 +92,7 @@ export default class Things {
           ...(cannon.x == null && { x: random(0, this.cw) }),
           ...(cannon.y == null && { y: this.ch }),
         },
-      })
+      }),
     )
   }
 

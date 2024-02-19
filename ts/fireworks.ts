@@ -14,7 +14,7 @@ type Options = {
   cannons?: Point[]
 }
 
-export default class Fireworks {
+export class Fireworks {
   private container: HTMLElement
   private maxRockets: number
   private rocketSpawnInterval: number
@@ -46,7 +46,7 @@ export default class Fireworks {
       height = container.clientHeight,
       rocketInitialPoint = null,
       cannons = [],
-    }: Options = {}
+    }: Options = {},
   ) {
     this.container = container
     this.rocketSpawnInterval = rocketSpawnInterval
@@ -83,7 +83,7 @@ export default class Fireworks {
     if (this.interval != null) return
     this.interval = window.setInterval(
       () => this.things.spawnRockets(),
-      this.rocketSpawnInterval
+      this.rocketSpawnInterval,
     )
     this.rafInterval = window.requestAnimationFrame(() => this.update())
     return (): void => this.stop()

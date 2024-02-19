@@ -1,3 +1,8 @@
+## 3.0.0
+
+- Update all dev depencencies.
+- BREAKING: Now using named export, `Fireworks` instead of default export.
+
 ## 2.6.2
 
 - Add `height` and `width` properties to `FireworksOptions` typescript definition

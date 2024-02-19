@@ -12,13 +12,13 @@ npm install --save fireworks-canvas
 ## usage
 
 ```js
-import * as Fireworks from 'fireworks-canvas' // mjs
+import { Fireworks } from 'fireworks-canvas' // mjs
 
-const Fireworks = require('fireworks-canvas') // cjs
+const { Fireworks } = require('fireworks-canvas') // cjs
 
-requirejs(['Fireworks'], Fireworks => {}) // amd
+requirejs(['Fireworks'], ({ Fireworks }) => {}) // amd
 
-const Fireworks = window.Fireworks // browser global
+const { Fireworks } = window.Fireworks // browser global
 
 // needs at least a container element, you can provide options
 // (options are optional, defaults defined below)
@@ -61,14 +61,7 @@ fireworks.onFinish(() => container.remove()) // callback when the last firework 
 ## usage with typscript
 
 ```ts
-import * as FireworksCanvas from 'fireworks-canvas'
-const fireworks = new FireworksCanvas(container)
-```
-
-OR
-
-```ts
-import FireworksCanvas = require('fireworks-canvas')
+import { Fireworks } from 'fireworks-canvas'
 const fireworks = new FireworksCanvas(container)
 ```
 

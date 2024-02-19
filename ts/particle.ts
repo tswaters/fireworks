@@ -1,8 +1,8 @@
 import { random, TAU } from './util'
 
 export type Point = {
-  x: number
-  y: number
+  x?: number
+  y?: number
 }
 
 type ParticleOptions = {

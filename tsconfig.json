@@ -8,7 +8,7 @@
     "noImplicitUseStrict": false,
     "noEmitOnError": true,
     "noImplicitAny": true,
-    "module": "commonjs",
+    "module": "ESNext",
     "outDir": "./dist/fireworks.js",
     "downlevelIteration": true
   },
